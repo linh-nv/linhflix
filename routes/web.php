@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
-
+use Laravel\Socialite\Facades\Socialite;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,5 +30,34 @@ Route::get('/cap-nhat-phim/{slug}',[IndexController::class, 'updateMovie'])->nam
 Route::get('/kho-phim',[IndexController::class, 'new_movie'])->name('new_movie');
 Route::get('/goi-y-phim',[IndexController::class, 'movie_suggest'])->name('movie_suggest');
 Route::get('/them-phim',[IndexController::class, 'add_movie'])->name('add_movie');
+Route::get('/dang-ky',[IndexController::class, 'register'])->name('register');
+Route::get('/dang-xuat',[IndexController::class, 'logout'])->name('logout');
+Route::post('/login',[IndexController::class, 'login'])->name('login');
+Route::get('/dang-nhap',[IndexController::class, 'login_page'])->name('login_page');
+Route::post('/them-tai-khoan',[IndexController::class, 'create_social_account'])->name('create_social_account');
+Route::get('/social_register',[IndexController::class, 'social_register'])->name('social_register');
+Route::post('/xac-thuc-email',[IndexController::class, 'email_verification'])->name('email_verification');
+Route::get('/kiem-tra-email',[IndexController::class, 'check_email'])->name('check_email');
+Route::get('/email_verification/{email}/{token}',[IndexController::class, 'callback_email_verification'])->name('callback_email_verification');
+
+Route::get('/chinh-sach',function(){
+    return '<h1>chinh sach</h1>';
+});
+Route::get('auth/facebook', function(){
+    return Socialite::driver('facebook')->redirect();
+});
+Route::get('auth/facebook/callback', function(){
+    $user = Socialite::driver('facebook')->user();
+    return $user;
+});
+
+Route::get('/auth/github', function () {
+    return Socialite::driver('github')->redirect();
+});
+Route::get('/auth/google', function () {
+    return Socialite::driver('google')->redirect();
+});
+Route::get('auth/github/callback',[IndexController::class, 'github_callback'])->name('github_callback');
+Route::get('auth/google/callback',[IndexController::class, 'google_callback'])->name('google_callback');
 
 
