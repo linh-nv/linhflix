@@ -7,8 +7,8 @@ use App\Models\Country;
 use App\Models\Episode;
 use App\Models\Genre;
 use App\Models\Movie;
+use App\Models\Movie_Follower;
 use App\Models\Movie_Genre;
-use App\Models\User;
 use App\Models\View;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
@@ -16,9 +16,7 @@ use Illuminate\Support\Facades\Request;
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\DomCrawler\Crawler;
-use Laravel\Socialite\Facades\Socialite;
 
-use Illuminate\Support\Facades\Mail;
 // use Illuminate\Http\Request;
 
 class IndexController extends Controller
@@ -50,8 +48,7 @@ class IndexController extends Controller
         ->orderBy('total_views', 'DESC')
         ->get();
 
-        // return response()->json($movie);
-        return view('pages.home', compact('movie', 'new_movie', 'serie_movie', 'singer_movie', 'category', 'genre', 'country', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total'));
+        return view('pages.client.home', compact('movie', 'new_movie', 'serie_movie', 'singer_movie', 'category', 'genre', 'country', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total'));
     }
     public function category($slug){
         $category = Category::orderBy('position','ASC')->get();
@@ -78,7 +75,7 @@ class IndexController extends Controller
         ->orderBy('total_views', 'DESC')
         ->get();
 
-        return view('pages.category', compact('new_movie', 'cate_slug', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'movie', 'category', 'genre', 'country'));
+        return view('pages.client.category', compact('new_movie', 'cate_slug', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'movie', 'category', 'genre', 'country'));
         // return response()->json($movie);
     }
     public function genre($slug){
@@ -111,7 +108,7 @@ class IndexController extends Controller
         ->orderBy('total_views', 'DESC')
         ->get();
 
-        return view('pages.genre', compact('new_movie', 'gen_slug', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'movie', 'category', 'genre', 'country'));
+        return view('pages.client.genre', compact('new_movie', 'gen_slug', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'movie', 'category', 'genre', 'country'));
         // return response()->json($movie);
     }
     public function country($slug){
@@ -139,7 +136,7 @@ class IndexController extends Controller
         ->orderBy('total_views', 'DESC')
         ->get();
 
-        return view('pages.country', compact('new_movie', 'count_slug', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'movie', 'category', 'genre', 'country'));
+        return view('pages.client.country', compact('new_movie', 'count_slug', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'movie', 'category', 'genre', 'country'));
         // return response()->json($view_day);
     }
     public function movie($slug){
@@ -165,7 +162,12 @@ class IndexController extends Controller
         
         $total_episode = $lastEpisode['episode'];
         $recent_episodes  = $total_episode - 1;
-
+ 
+        if (Session::has('user')) {
+            $user = Session::get('user');
+            $user_id = $user['id'];
+            $follower = Movie_Follower::where('movie_id', $movie->id)->where('user_id', $user_id)->first();
+        }
         $view_day = View::with('movie')->whereDate('view_date', now()->toDateString())->orderBy('view_number', 'DESC')->get();
         $view_month_total = View::with('movie')->where('view_date', '>=', now()->startOfMonth()->toDateString())
         ->groupBy('movie_id') // Nhóm theo movie_id
@@ -183,8 +185,8 @@ class IndexController extends Controller
         ->orderBy('total_views', 'DESC')
         ->get();
 
-        // return response()->json($penultimateEpisode);
-        return view('pages.movie', compact('startEpisode', 'penultimateEpisode', 'lastEpisode', 'recent_episodes', 'total_episode', 'new_movie', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'movie', 'category', 'genre', 'genre_movie', 'country'));
+        // return response()->json($episode);
+        return view('pages.client.movie', compact(isset($follower) ? 'follower' : [], 'startEpisode', 'penultimateEpisode', 'lastEpisode', 'recent_episodes', 'total_episode', 'new_movie', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'movie', 'category', 'genre', 'genre_movie', 'country'));
     }
     public function watch($slug){
         $category = Category::orderBy('position','ASC')->get();
@@ -217,7 +219,7 @@ class IndexController extends Controller
             // Đặt session để ghi nhớ rằng người dùng đã xem phim
             Session::put('watched_movie_' . $movie->id .$ipAddress .$userAgent, true);
         }
-        return view('pages.watch', compact('episode', 'movie', 'category', 'genre', 'genre_movie', 'country'));
+        return view('pages.client.watch', compact('episode', 'movie', 'category', 'genre', 'genre_movie', 'country'));
         // return response()->json($userAgent);
     }
     public function watchEpisode($slug, $episode)
@@ -255,7 +257,7 @@ class IndexController extends Controller
             // Đặt session để ghi nhớ rằng người dùng đã xem phim
             Session::put('watched_movie_' . $movie->id .$ipAddress .$userAgent, true);
         }
-        return view('pages.watch', compact('episode', 'total_episode','movie_suggest','category','genre','country', 'genre_movie', 'movie','movie_episode'));
+        return view('pages.client.watch', compact('episode', 'total_episode','movie_suggest','category','genre','country', 'genre_movie', 'movie','movie_episode'));
         // return response()->json($total_episode);
     }
     public function search(){
@@ -290,7 +292,7 @@ class IndexController extends Controller
             ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
             ->orderBy('total_views', 'DESC')
             ->get();
-            return view('pages.search', compact('view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'search','movie', 'category','genre','country'));
+            return view('pages.client.search', compact('view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'search','movie', 'category','genre','country'));
         }else{
             return redirect()->to('/');
         }
@@ -320,7 +322,7 @@ class IndexController extends Controller
             ->orderBy('total_views', 'DESC')
             ->get();
 
-            return view('pages.director', compact('director', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total','movie', 'category','genre','country'));
+            return view('pages.client.director', compact('director', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total','movie', 'category','genre','country'));
         }else{
             return redirect()->to('/');
         }
@@ -350,7 +352,7 @@ class IndexController extends Controller
             ->orderBy('total_views', 'DESC')
             ->get();
 
-            return view('pages.actor', compact('actor', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total','movie', 'category','genre','country'));
+            return view('pages.client.actor', compact('actor', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total','movie', 'category','genre','country'));
         }else{
             return redirect()->to('/');
         }
@@ -413,58 +415,50 @@ class IndexController extends Controller
 
         // return response()->json($movies_search);
         
-        return view('pages.new_movie', compact('category', 'genre', 'country', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total'));
+        return view('pages.client.new_movie', compact('category', 'genre', 'country', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total'));
     }
-    public function movie_suggest(){
 
-        $movies_search = []; // Định nghĩa biến $movies trước khi sử dụng
+    public function movie_suggest()
+    {
+        $movies_search = [];
 
-        $url = 'https://phimmoiiii.net/xem-phim/ba-chu-bau-troi-masters-of-the-air-tap-1';// . $_GET['search'];
-        $crawler = Http::get($url);
+        $url = 'https://phimmoiiii.net/?s=' . $_GET['search']; // URL cần crawl dữ liệu
+        $response = Http::get($url); // Thực hiện yêu cầu HTTP và nhận response
 
-        // // Tạo một HTTP client
-        // $client = HttpClient::create();
-    
-        // // Khởi tạo một BrowserKit client với HTTP client
-        // $browser = new HttpBrowser($client);
-    
-        // // Thực hiện yêu cầu GET đến URL cụ thể
-        // $crawler = $browser->request('GET', $url);
-    
-        // Trích xuất thông tin từ trang web
-        $crawler->filter('div.result-item')->each(
-            function (Crawler $item) use (&$movies_search) {
-                $name = $item->filter('div.details div.title a')->text();
-                $year = $item->filter('div.details div.meta span')->text();
-                $description = $item->filter('div.details div.contenido p')->text();
-                $poster = $item->filter('div.image div.thumbnail a img')->attr('src');
-                $link = $item->filter('div.details div.title a')->attr('href');
-                
-                $parts = explode("/", $link);
-                $slug = end($parts);
-                $movies_search[] = [
-                    'name' => $name,
-                    'slug' => $slug,
-                    'year' => $year,
-                    'description' => $description,
-                    'poster' => $poster,
-                    'link' => $link,
-                    'isset' => 0
-                ];
-            }
-        );
-        foreach($movies_search as &$mov) {
+        $htmlContent = $response->getBody()->getContents(); // Lấy nội dung HTML từ response
+        $crawler = new Crawler($htmlContent); // Tạo đối tượng Crawler từ nội dung HTML
+
+        $crawler->filter('div.result-item')->each(function (Crawler $item) use (&$movies_search) {
+            $name = $item->filter('div.details div.title a')->text();
+            $year = $item->filter('div.details div.meta span')->text();
+            $description = $item->filter('div.details div.contenido p')->text();
+            $poster = $item->filter('div.image div.thumbnail a img')->attr('src');
+            $link = $item->filter('div.details div.title a')->attr('href');
+
+            $parts = explode("/", $link);
+            $slug = end($parts);
+            $movies_search[] = [
+                'name' => $name,
+                'slug' => $slug,
+                'year' => $year,
+                'description' => $description,
+                'poster' => $poster,
+                'link' => $link,
+                'isset' => 0
+            ];
+        });
+
+        foreach ($movies_search as &$mov) {
             $movie = Movie::where('slug', $mov['slug'])->first();
-            if(isset($movie)) {
+            if (isset($movie)) {
                 $mov['isset'] = 1;
             }
         }
-        unset($mov); // Giải phóng biến $mov để tránh ảnh hưởng đến các lần lặp sau
-        
+        unset($mov);
+
         return $movies_search;
-        // return response()->json($movies_search);
-        
     }
+
     public function add_movie(){
         if(isset($_GET['link'])){
             $url = $_GET['link'];
@@ -536,7 +530,7 @@ class IndexController extends Controller
                 $movie->save();
 
                 // Lưu thông tin các tập phim
-                $movie_id = Movie::count() + 1;
+                $movie_id = Movie::count() + 5;
 
                 foreach ($data_episode as $episode) {
                     $movie_episode = new Episode();
@@ -546,7 +540,7 @@ class IndexController extends Controller
                     $movie_episode->save();
                 }
 
-                return redirect()->to('/phim'. $slug);    
+                return redirect()->to('/phim'.'/'. $slug);    
             }
         }else{
             return redirect()->back();
@@ -574,159 +568,5 @@ class IndexController extends Controller
         return $data;
     }
 
-    // -------------- Register - Login with social media ------------------
-    public function github_callback(){
-        $github_data = Socialite::driver('github')->user();
-        $user = User::where('github_id', $github_data->id)->first();
-        if(isset($user)){
-            Session::put('user', $user); 
-            return redirect()->to('/');
-        }else{
-            $category = Category::orderBy('position','ASC')->get();
-            $genre = Genre::orderBy('id','DESC')->get();
-            $country = Country::orderBy('id','ASC')->get();
     
-            return view('pages.social_register', compact('github_data', 'category', 'genre', 'country'));
-        }
-    }
-    public function google_callback(){
-        $google_data = Socialite::driver('google')->user();
-        $user = User::where('email', $google_data->email)->first();
-        if(isset($user)){
-            Session::put('user', $user); 
-            return redirect()->to('/');
-        }else{
-            $category = Category::orderBy('position','ASC')->get();
-            $genre = Genre::orderBy('id','DESC')->get();
-            $country = Country::orderBy('id','ASC')->get();
-    
-            $email = $google_data->email;
-            return view('pages.social_register', compact('email', 'category', 'genre', 'country'));
-        }
-    }
-    public function social_register(){
-        $category = Category::orderBy('position','ASC')->get();
-        $genre = Genre::orderBy('id','DESC')->get();
-        $country = Country::orderBy('id','ASC')->get();
-
-        return view('pages.social_register', compact( 'category', 'genre', 'country'));
-    }
-    public function check_email(){
-        if(!empty($_GET['email'])){
-            $user = User::where('email', $_GET['email'])->first();
-            if(isset($user)){
-                return response()->json(['exists' => true]);
-            } else {
-                return response()->json(['exists' => false]);
-            }
-        }else{
-            return response()->json(['exists' => null]);
-        }
-    }
-    // post
-    public function create_social_account(){
-        if(isset($_POST)){
-            $user = new User();
-            $user->name = $_POST['name_register'];
-            $user->email = $_POST['email_register'];
-            $user->email_verified_at = empty($_POST['github_data_id']) ? now() : null; //nếu đăng ký bằng email thì chưa có những id github, facebook ...
-            $user->password = md5($_POST['pass_register']);
-            $user->github_id = empty($_POST['github_data_id']) ? null : $_POST['github_data_id'];
-            $user->facebook_id = empty($_POST['facebook_data_id']) ? null : $_POST['facebook_data_id'];
-            $user->remember_token = $_POST['_token'];
-            $user->created_at = now();
-            $user->updated_at = now();
-            $user->save();
-
-            Session::put('user', $user); 
-            return redirect()->to('/');
-            // return $user;
-        }else{
-            return redirect()->back();
-        }
-    }
-    
-    // -------------- Register - Login - Logout ------------------
-    public function register(){
-        $category = Category::orderBy('position','ASC')->get();
-        $genre = Genre::orderBy('id','DESC')->get();
-        $country = Country::orderBy('id','ASC')->get();
-     
-        return view('pages.register', compact('category', 'genre', 'country'));
-    }
-    public function logout(){
-        // Xóa tất cả các session
-        Session::flush();
-        return redirect()->back();
-    }
-    public function login_page(){
-        $category = Category::orderBy('position','ASC')->get();
-        $genre = Genre::orderBy('id','DESC')->get();
-        $country = Country::orderBy('id','ASC')->get();
-
-        return view('pages.login', compact('category', 'genre', 'country'));
-    }
-    // post 
-    public function login(){
-        if(isset($_POST)){
-            $user = User::where('email', $_POST['account_login'])->where('password', md5($_POST['password_login']))->first();
-            if(isset($user)){
-                Session::flush();
-                Session::put('user', $user); 
-                return redirect()->to('/');
-            }else{
-                Session::flash('login_false', 'Sai tên đăng nhập hoặc mật khẩu!!');
-                return redirect()->route('login_page');
-            }
-        }else{
-            return redirect()->back();
-        }
-    }
-
-    // -------------- Xác minh email ------------------
-    public function email_verification() {
-        $category = Category::orderBy('position','ASC')->get();
-        $genre = Genre::orderBy('id','DESC')->get();
-        $country = Country::orderBy('id','ASC')->get();
-
-        if(isset($_POST)){
-            $name = $_POST['name'];
-            $email = $_POST['email'];
-            $token = $_POST['_token'];
-            $user = User::where('email', $email)->first();
-            if(!isset($user)){     
-                //gửi mail xác minh     
-                Mail::send('mail.email_verification', compact('name', 'token', 'email'), function($email_response) use($name, $email){
-                    $email_response->subject('Linh Phim - Confirm your email address');
-                    $email_response->to($email, $name);
-                });
-
-                $user = new User();
-                $user->name = $name;
-                $user->email = $email;
-                $user->password = md5($_POST['password']);
-                $user->github_id = empty($_POST['github_data_id']) ? null : $_POST['github_data_id'];
-                $user->facebook_id = empty($_POST['facebook_data_id']) ? null : $_POST['facebook_data_id'];
-                $user->remember_token = $token;
-                $user->save();
-            }
-        }
-    }
-    public function callback_email_verification($email, $token){
-        $user = User::where('email', $email)->first();
-
-        if($user->email_verified_at === null && $user->remember_token === $token){
-            $user->email_verified_at = now();
-            $user->created_at = now();
-            $user->updated_at = now();
-            $user->save();
-
-            Session::put('user', $user); 
-            return redirect()->to('/');
-        }else{
-            Session::flash('verified', 'Tài khoản đã xác thực rồi!!'); 
-            return redirect()->route('register');
-        }
-
-    }
 }

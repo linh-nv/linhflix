@@ -149,7 +149,30 @@ Validator.isEmail = function (selector, message) {
         selector: selector,
         test: function (value) {
             var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-            return regex.test(value) ? undefined : message || 'Trường này phải là email';
+            return regex.test(value) ? undefined : message || 'Email không hợp lệ!!';
+        },
+    };
+};
+
+Validator.isName = function (selector, message) {
+    return {
+        selector: selector,
+        test: function (value) {
+            var regex = /^[a-zA-Z ]{2,30}$/; // Chỉ chấp nhận ký tự chữ và khoảng trắng, từ 2 đến 30 ký tự
+            return regex.test(value) ? undefined : message || 'Tên không hợp lệ!!';
+        },
+    };
+};
+
+Validator.isPassword = function (selector, message) {
+    return {
+        selector: selector,
+        test: function (value) {
+            var regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/; // Ít nhất 8 ký tự, ít nhất một chữ cái viết thường, ít nhất một chữ cái viết hoa và ít nhất một số
+            return regex.test(value)
+                ? undefined
+                : message ||
+                      'Mật khẩu phải trên 8 ký tự, phải có một chữ cái viết thường, một chữ cái viết hoa và một số!!';
         },
     };
 };

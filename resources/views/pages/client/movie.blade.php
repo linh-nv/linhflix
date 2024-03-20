@@ -1,52 +1,154 @@
 @extends('layout')
 @section('content')
 <section id="movie-content" class="">
-    <div class="main-movie relative w-full lg:h-full md:h-2/3 sm:h-1/2 h-1/3">
-        <div class="backgound-poster-movie w-full h-full flex justify-end relative">
-            <img class="sm:w-[70%] w-full" src="{{$movie->image}}" alt="">
+    <div class="main-movie relative w-full mb-20">
+        <div class="backgound-poster-movie w-full flex justify-end relative">
+            <img class="w-[70%]" src="{{$movie->image}}" alt="">
         </div>
-        <div class="main-movie-content absolute text-white top-1/4 left-[5%] w-[50%]">
-            <div class="main-content-title pb-6">
-                <h1 class="font-black xl:text-6xl lg:text-5xl sm:text-4xl text-2xl" style="text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.8)">{{$movie->title}}</h1>
+        <div class="main-movie-content absolute text-white top-1/4 left-[5%] sm:w-[25%] w-[50%]">
+            {{-- ---------------------Tên phim-------------------------- --}}
+            <div class="main-content-title sm:pb-6">
+                <h1 class="font-black xl:text-6xl lg:text-4xl sm:text-3xl text-2xl" style="text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.8)">{{$movie->title}}</h1>
             </div>
-            <div class="main-content-original_name sm:mb-10">
+            {{-- ---------------------Tên tiếng Anh--------------------- --}}
+            <div class="main-content-original_name sm:mb-20">
                 <h3 class="font-bold xl:text-3xl lg:text-2xl sm:text-xl text-lg" style="text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.8)">{{$movie->name_eng}}</h3>
             </div>
-            @if ($movie->status != 'trailer')
-                @if ($movie->category_id === 6)
-                    @if ($movie->movie_source == "phimmoi")
-                        <a href="{{$startEpisode['linkphim']}}" class="watch-movie flex sm:w-32 w-16 sm:h-16 h-16 sm:rounded-lg rounded-[50%] sm:justify-between justify-center text-center items-center sm:px-4 bg-zinc-200 text-black font-semibold mt-6 transition-all duration-300 ease-linear scroll-smooth relative hover:scale-110">
-                            <svg class="w-8 text-red-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" data-slot="icon" class="w-6 h-6">
-                                <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd" />
-                            </svg>  
-                            <span class="sm:flex hidden">Play</span>
-                        </a>
-                    @else
-                        <a href="{{route('watch.episode', ['slug' => $movie->slug, 'episode' => 1])}}" class="watch-movie flex sm:w-32 w-16 sm:h-16 h-16 sm:rounded-lg rounded-[50%] sm:justify-between justify-center text-center items-center sm:px-4 bg-zinc-200 text-black font-semibold mt-6 transition-all duration-300 ease-linear scroll-smooth relative hover:scale-110">
-                            <svg class="w-8 text-red-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" data-slot="icon" class="w-6 h-6">
-                                <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd" />
-                            </svg>  
-                            <span class="sm:flex hidden">Play</span>
-                        </a>
-                    @endif
-                @else
-                    <a href="{{route('watch', $movie->slug)}}" class="watch-movie flex sm:w-32 w-16 sm:h-16 h-16 sm:rounded-lg rounded-[50%] sm:justify-between justify-center text-center items-center sm:px-4 bg-zinc-200 text-black font-semibold mt-6 transition-all duration-300 ease-linear scroll-smooth relative hover:scale-110">
-                        <svg class="w-8 text-red-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" data-slot="icon" class="w-6 h-6">
+
+            {{-- ---------------------Các nút-------------------------- --}}
+            <div class="flex h-16 items-center gap-4">
+
+                {{-- -------------------Nút Play------------------------ --}}
+                @if ($movie->status != 'trailer')
+                    <a href="{{$movie->category_id === 6 ? route('watch.episode', ['slug' => $movie->slug, 'episode' => 1]) : route('watch', $movie->slug)}}" class="
+                        watch-movie flex sm:w-44 w-32 sm:h-16 h-16 shadow-lg shadow-zinc-800 rounded-lg sm:gap-4 gap-2 justify-center text-center items-center sm:px-4 bg-red-500 text-white font-semibold mt-6 transition-all duration-300 ease-linear scroll-smooth relative hover:scale-110">
+                        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" data-slot="icon" class="w-6 h-6">
                             <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd" />
                         </svg>  
-                        <span class="sm:flex hidden">Play</span>
+                        <span class="sm:flex">Play</span>
                     </a>
-                @endif
-            @else
-                <span class="watch-movie flex sm:w-60 w-44 sm:h-16 h-16 sm:rounded-lg rounded-xl sm:justify-between justify-center text-center items-center sm:px-4 bg-zinc-200 text-black font-semibold mt-6 transition-all duration-300 ease-linear scroll-smooth relative hover:scale-110">
-                    <svg class="w-8 text-slate-700 sm:flex hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" data-slot="icon" class="w-6 h-6">
-                        <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd" />
-                    </svg>  
-                    <span class="flex sm:text-xl text-lg">Comming soon</span>
-                </span>
-            @endif 
+                @else
+                    <span class="watch-movie flex sm:w-60 w-44 h-full rounded-lg sm:justify-between justify-center text-center items-center sm:px-4 bg-zinc-200 text-black font-semibold mt-6 transition-all duration-300 ease-linear scroll-smooth relative hover:scale-110">
+                        <svg class="w-8 text-slate-700 sm:flex hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" data-slot="icon" class="w-6 h-6">
+                            <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd" />
+                        </svg>  
+                        <span class="flex sm:text-xl text-lg">Comming soon</span>
+                    </span>
+                @endif 
+
+                {{-- ---------------Nút thêm phim yêu thích----------------- --}}
+                <a id="follow" type="button" class="flex cursor-pointer w-16 h-16 shadow-lg shadow-zinc-800 rounded-lg justify-center items-center font-semibold mt-6 transition-all duration-300 ease-linear scroll-smooth relative hover:scale-110 bg-slate-200 sm:opacity-100 opacity-80">
+                    @if (isset($follower))
+                        <i class="followed">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-green-700 w-8 h-8">
+                                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                            </svg>
+                        </i>  
+                    @else
+                        <i class="yet_follow">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-red-500 w-8 h-8">
+                                <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                            </svg>                       
+                        </i>
+                    @endif
+                </a>
+            </div>
         </div>
-        
+
+        {{-- ----------------Thông báo và lấy id phim, id người dùng---------------- --}}
+        <div id="customAlert" class="custom-alert fixed z-50 bottom-10 right-0 py-4 px-8">
+            <span id="alertMessage" class="alert-message"></span>
+            <input id="movieId" type="hidden" name="movie_id" value="{{$movie->id}}">
+            @php
+                if (Session::has('user')) {
+                    $user = Session::get('user');
+                    $user_id = $user['id'];
+                }
+            @endphp
+            <input id="userId" type="hidden" name="user_id" value="{{$user_id??null}}">
+        </div>
+
+        {{-- -----------Xử lý thêm phim vào danh sách phim yêu thích------------------- --}}
+        <script>
+            $(document).ready(function () {
+                $('#follow').click(function () {
+                    if ($('#follow i').attr('class') === 'yet_follow') {
+                        const user_id = $('#userId').val();
+                        if (user_id) {
+                            $.ajax({
+                                url: "{{ route('follow') }}",
+                                method: 'GET',
+                                data: {
+                                    movie_id: $('#movieId').val(),
+                                    user_id: user_id
+                                },
+                                success: function (response) {
+                                    if (response){
+                                        $('#follow').empty();
+                                        $('#follow').append('<i class="followed"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-green-700 w-8 h-8"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" /></svg></i>');
+                                        showAlert('Đã thêm vào danh sách phim yêu thích!!', 'success');
+                                    }else{
+                                        $('#follow').empty();
+                                        $('#follow').append('<i class="yet_follow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-red-500 w-8 h-8"><path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" /></svg></i>');
+                                        showAlert('Đã xảy ra lỗi, vui lòng đăng nhập lại!!', 'error');
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.log(error);
+                                },
+                            });
+                        }else{
+                            $('#loggin-form').show();
+                            showAlert('Trước hết xin hãy đăng nhập!!', 'error');
+                        }
+                    } else {
+                        const user_id = $('#userId').val();
+                        if (user_id) {
+                            $.ajax({
+                                url: "{{ route('unfollow') }}",
+                                method: 'GET',
+                                data: {
+                                    movie_id: $('#movieId').val(),
+                                    user_id: user_id
+                                },
+                                success: function (response) {
+                                    if (response){
+                                        $('#follow').empty();
+                                        $('#follow').append('<i class="yet_follow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-red-500 w-8 h-8"><path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" /></svg></i>');
+                                        showAlert('Đã xóa khỏi danh sách phim yêu thích!!', 'error');
+                                    }else{
+                                        $('#follow').empty();
+                                        $('#follow').append('<i class="yet_follow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-red-500 w-8 h-8"><path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" /></svg></i>');
+                                        showAlert('Đã xảy ra lỗi, vui lòng đăng nhập lại!!', 'error');
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.log(error);
+                                },
+                            });
+                        }else{
+                            showAlert('Chưa đăng nhập!!', 'error');
+                        }
+                    }
+                });
+            });
+
+            // custom thông báo
+            function showAlert(message, type) {
+                var alertElement = $('#customAlert');
+                var alertMessage = $('#alertMessage');
+
+                alertMessage.text(message);
+
+                if (type === 'success') {
+                    alertElement.removeClass('alert-error').addClass('alert-success');
+                } else if (type === 'error') {
+                    alertElement.removeClass('alert-success').addClass('alert-error');
+                }
+
+                alertElement.fadeIn().delay(1500).fadeOut();
+            }
+        </script>
     </div>
     <div class="movie-container flex flex-wrap">
         <div class="movie-container-left lg:w-[70%] w-full">
@@ -332,6 +434,8 @@
         <span class="h-text">Đề xuất cho bạn</span>
     </a>
 </div>
+
+{{-- -----------------Slide---------------------------------- --}}
 <div class="card-slider relative sm:mx-[20px] mx-[10px]">
     <div class="hot-movie relative w-full overflow-auto select-none lg:h-[450px] sm:h-[350px] h-[300px]" >
         <div class="list-movie absolute flex w-max lg:top-[20px] sm:top-[15px] top-[10px] left-0 sm:gap-[20px] gap-[10px]">

@@ -1,6 +1,6 @@
 @extends('layout')
 @section('content')
-<main id="main-contents" class="lg:flex block flex-wrap lg:px-20 sm:px-12 px-8 gap-x-10">
+<main id="main-contents" class="lg:flex block flex-wrap lg:px-20 sm:px-12 px-8 gap-x-10 mb-[400px]">
     <div class="content-left lg:w-[70%] w-full">
         <div class="new-movie-heading heading">
             <a href="" title="Phim mới">

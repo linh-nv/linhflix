@@ -4,30 +4,52 @@
     <div class="heading w-full flex justify-center pt-10">
         <h1 class="h-text text-red-200">Đăng nhập</h1>
     </div>
-    <form action="{{route('login')}}" method="POST">
-        @csrf
-        <div class="register_form inline-grid w-full justify-center text-xl">
-            @if(Session::has('login_false'))
-                <span class="text-red-400 py-4">{{ Session::get('login_false') }}</span>
-            @endif
-            <div class="inline-grid">
-                <span>Tài khoản</span>
-                <input type="text" name="account_login" placeholder="Nhập tài khoản ..." class="p-2 rounded-lg text-lg">
-            </div>
-            <div class="inline-grid">
-                <span>Nhập mật khẩu</span>
-                <input type="password" name="password_login" placeholder="Nhập mật khẩu ..." class="p-2 rounded-lg text-lg">
-            </div>
-            <a href="{{route('login_page')}}" class="w-full text-right text-green-300 mt-4 text-xl font-normal underline">Quên mật khẩu</a>
-            <div class="w-full flex justify-center mt-10">
-                <button type="submit" class="w-full bg-blue-900 text-2xl font-bold p-4 rounded-xl hover:text-white">Đăng nhập</button>
-            </div>
+    
+    <form id="page-form-login" action="{{route('login')}}" method="post" class="flex justify-center">
+      @csrf
+      <div class="form-group mt-5 text-xl font-semibold xl:max-w-[400px] sm:max-w-[300px] w-full">
+        @if(Session::has('login_false'))
+            <span class="text-red-400">{{ Session::get('login_false') }}</span>
+        @endif
+        <div class="form-input my-5">
+          <input id="email_login" type="text" name="account_login" class="text-lg p-4 rounded-xl bg-transparent border mt-2 w-full" required>
+              <label class="label">Email</label>
+              <span class="message text-lg text-red-500 pl-2 w-full">&nbsp;</span>
         </div>
-    </form>
-    <div class="w-full flex justify-center text-xl">
-        Chưa có tài khoản?&nbsp;
-        <a href="{{route('register')}}" class="text-blue-500 underline">Đăng ký</a>
+        <div class="form-input">
+          <input id="password_login" type="password" name="password_login" class="text-lg p-4 rounded-xl bg-transparent border mt-2 w-full" required>
+              <label class="label">Mật khẩu</label>
+              <span class="message text-lg text-red-500 pl-2 w-full">&nbsp;</span>
+        </div>
+        <div class="w-full text-right text-green-300 mt-4 text-lg font-normal underline">
+          <a href="{{route('login_page')}}" class="">Quên mật khẩu</a>
+        </div>
+        <div class="w-full flex justify-center">
+          <button type="submit"class="w-full bg-blue-900 mt-10 p-4 rounded-2xl hover:text-white transition duration-200">Đăng nhập</button>
+        </div>
       </div>
+    </form>
+  
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          Validator({
+          form: '#page-form-login',
+          formGroupSelector: '.form-input',
+          errorSelector: '.message',
+          rules: [
+            Validator.isEmail('#email_login'),
+            Validator.isPassword('#password_login',"Mật khẩu không hợp lệ!!"),
+          ],
+          onSubmit: function (data) {
+            document.getElementById('page-form-login').submit();
+          }
+        });
+      });
+    </script>
+    <div class="w-full flex justify-center text-xl mt-5">
+      Chưa có tài khoản?&nbsp;
+      <a href="{{route('register')}}" class="text-blue-500 underline">Đăng ký</a>
+    </div>
     <div class="mt-20 w-full pb-10">
         <div class="flex justify-center">
           <h5 class="text-2xl font-semibold">Hoặc đăng nhập bằng ....</h5>
@@ -53,7 +75,7 @@
             </a>
           </li>
           <li class="google-icon sm:mx-20 mx-10">
-            <a href="">
+            <a href="{{url('/auth/google')}}">
               <button
                 type="button"
                 data-te-ripple-init

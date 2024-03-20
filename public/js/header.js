@@ -62,68 +62,33 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function handleKeyPress(event) {
-    // Kiểm tra xem phím nhấn có phải là Enter không (mã ASCII của Enter là 13)
-    if (event.key === 'Enter') {
-        // Gọi hàm submitForm() khi Enter được nhấn
-        submitForm();
-        // Ngăn chặn hành động mặc định của phím Enter (ngăn form tự động submit)
-        event.preventDefault();
-    }
-}
-
 // Hàm xử lý sự kiện khi form được gửi
 function submitForm() {
     // Gọi hàm submit() của form để submit form
     document.getElementById('search-form').submit();
 }
 
-// trending tab movie
-document.addEventListener('DOMContentLoaded', function () {
-    // Get all tab elements
-    var tabs = document.querySelectorAll('.trending-tab li');
-    // Get all content divs
-    var contentDivs = document.querySelectorAll('.trending-list-items > div');
-    // Add click event listeners to each tab
-    tabs.forEach(function (tab, index) {
-        tab.addEventListener('click', function () {
-            // Remove 'active' class from all tabs
-            tabs.forEach(function (t) {
-                t.classList.remove('active-tab');
-            });
-
-            // Add 'active' class to the clicked tab
-            tab.classList.add('active-tab');
-
-            // Hide all content divs
-            contentDivs.forEach(function (contentDiv) {
-                contentDiv.style.display = 'none';
-            });
-
-            // Display the content div corresponding to the clicked tab
-            contentDivs[index].style.display = 'block';
-        });
-    });
-});
-
 const sign_in = document.getElementById('sign-in');
 
 const close = document.getElementById('close-btn');
 const loggin_form = document.getElementById('loggin-form');
 
-sign_in.addEventListener('click', function () {
-    loggin_form.style.display = 'block';
-});
-close.addEventListener('click', function () {
-    loggin_form.style.display = 'none';
-});
+if (sign_in) {
+    sign_in.addEventListener('click', function () {
+        loggin_form.style.display = 'block';
+    });
+}
+if (close) {
+    close.addEventListener('click', function () {
+        loggin_form.style.display = 'none';
+    });
+}
 
 // register
-document.addEventListener('DOMContentLoaded', function () {
-    const createBtn = document.querySelector('.create_btn');
-    const verification = document.querySelector('.verification');
-
+const createBtn = document.querySelector('.create_btn');
+const verification = document.querySelector('.verification');
+if (createBtn) {
     createBtn.addEventListener('click', function () {
         verification.classList.toggle('hidden'); // Thêm hoặc loại bỏ class active
     });
-});
+}

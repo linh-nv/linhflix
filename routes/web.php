@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 /*
@@ -14,12 +15,11 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
-
+// ---------------------------------Client routes--------------------------------------
 Route::get('/',[IndexController::class, 'home'])->name('home');
 Route::get('/phim/{slug}',[IndexController::class, 'movie'])->name('movie');
 Route::get('/xem-phim/{slug}',[IndexController::class, 'watch'])->name('watch');
 Route::get('/xem-phim/{slug}/tap-{episode}', [IndexController::class, 'watchEpisode'])->name('watch.episode');
-
 Route::get('/danh-muc/{slug}',[IndexController::class, 'category'])->name('category');
 Route::get('/the-loai/{slug}',[IndexController::class, 'genre'])->name('genre');
 Route::get('/quoc-gia/{slug}',[IndexController::class, 'country'])->name('country');
@@ -30,16 +30,20 @@ Route::get('/cap-nhat-phim/{slug}',[IndexController::class, 'updateMovie'])->nam
 Route::get('/kho-phim',[IndexController::class, 'new_movie'])->name('new_movie');
 Route::get('/goi-y-phim',[IndexController::class, 'movie_suggest'])->name('movie_suggest');
 Route::get('/them-phim',[IndexController::class, 'add_movie'])->name('add_movie');
-Route::get('/dang-ky',[IndexController::class, 'register'])->name('register');
-Route::get('/dang-xuat',[IndexController::class, 'logout'])->name('logout');
-Route::post('/login',[IndexController::class, 'login'])->name('login');
-Route::get('/dang-nhap',[IndexController::class, 'login_page'])->name('login_page');
-Route::post('/them-tai-khoan',[IndexController::class, 'create_social_account'])->name('create_social_account');
-Route::get('/social_register',[IndexController::class, 'social_register'])->name('social_register');
-Route::post('/xac-thuc-email',[IndexController::class, 'email_verification'])->name('email_verification');
-Route::get('/kiem-tra-email',[IndexController::class, 'check_email'])->name('check_email');
-Route::get('/email_verification/{email}/{token}',[IndexController::class, 'callback_email_verification'])->name('callback_email_verification');
 
+// ---------------------------------User routes----------------------------------
+Route::get('/dang-nhap',[UserController::class, 'login_page'])->name('login_page');
+Route::post('/login',[UserController::class, 'login'])->name('login');
+Route::get('/dang-ky',[UserController::class, 'register'])->name('register');
+Route::get('/dang-xuat',[UserController::class, 'logout'])->name('logout');
+Route::post('/them-tai-khoan',[UserController::class, 'create_social_account'])->name('create_social_account');
+Route::get('/social_register',[UserController::class, 'social_register'])->name('social_register');
+Route::get('/kiem-tra-email',[UserController::class, 'check_email'])->name('check_email');
+Route::get('/follow',[UserController::class, 'follow'])->name('follow');
+Route::get('/unfollow',[UserController::class, 'unfollow'])->name('unfollow');
+// Social media authentication routes 
+Route::post('/xac-thuc-email',[UserController::class, 'email_verification'])->name('email_verification');
+Route::get('/email_verification/{email}/{token}',[UserController::class, 'callback_email_verification'])->name('callback_email_verification');
 Route::get('/chinh-sach',function(){
     return '<h1>chinh sach</h1>';
 });
@@ -57,7 +61,7 @@ Route::get('/auth/github', function () {
 Route::get('/auth/google', function () {
     return Socialite::driver('google')->redirect();
 });
-Route::get('auth/github/callback',[IndexController::class, 'github_callback'])->name('github_callback');
-Route::get('auth/google/callback',[IndexController::class, 'google_callback'])->name('google_callback');
+Route::get('auth/github/callback',[UserController::class, 'github_callback'])->name('github_callback');
+Route::get('auth/google/callback',[UserController::class, 'google_callback'])->name('google_callback');
 
 

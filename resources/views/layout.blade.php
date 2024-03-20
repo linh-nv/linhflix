@@ -16,45 +16,119 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
 </head>
 <body class="text-slate-300 bg-zinc-900 relative">
+
+  {{-- ----------------load mỗi khi chuyển trang---------------------- --}}
+  <style>
+    /* loading */
+    #loading .loader {
+      width: 35px;
+      height: 80px;
+      position: relative;
+    }
+    .loader:after {
+      content: "";
+      position: absolute;
+      inset: 0 0 20px;
+      border-radius: 50px 50px 10px 10px;
+      padding: 1px;
+      background: linear-gradient(#ff4d80 33%,#ffa104 0 66%, #01ddc7 0) content-box;
+      --c:radial-gradient(farthest-side,#000 94%,#0000);
+      -webkit-mask:
+        linear-gradient(#0000 0 0),
+        var(--c) -10px -10px,
+        var(--c)  15px -14px,
+        var(--c)   9px -6px,
+        var(--c) -12px  9px,
+        var(--c)  14px  9px,
+        var(--c)  23px 27px,
+        var(--c)  -8px 35px,
+        var(--c)   50% 50%,
+        linear-gradient(#000 0 0);
+      mask:
+        linear-gradient(#000 0 0),
+        var(--c) -10px -10px,
+        var(--c)  15px -14px,
+        var(--c)   9px -6px,
+        var(--c) -12px  9px,
+        var(--c)  14px  9px,
+        var(--c)  23px 27px,
+        var(--c)  -8px 35px,
+        var(--c)   50% 50%,
+        linear-gradient(#0000 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude,add,add,add,add,add,add,add,add;
+      -webkit-mask-repeat: no-repeat;
+      animation: l3 3s infinite ;
+    }
+    .loader:before {
+      content: "";
+      position: absolute;
+      inset: 50% calc(50% - 4px) 0;
+      background: #e0a267;
+      border-radius: 50px;
+    }
+    @keyframes l3 {
+    0%   {-webkit-mask-size: auto,0 0,0 0,0 0,0 0,0 0,0 0,0 0,0 0}
+    10%  {-webkit-mask-size: auto,25px 25px,0 0,0 0,0 0,0 0,0 0,0 0,0 0}
+    20%  {-webkit-mask-size: auto,25px 25px,25px 25px,0 0,0 0,0 0,0 0,0 0,0 0}
+    30%  {-webkit-mask-size: auto,25px 25px,25px 25px,30px 30px,0 0,0 0,0 0,0 0,0 0}
+    40%  {-webkit-mask-size: auto,25px 25px,25px 25px,30px 30px,30px 30px,0 0,0 0,0 0,0 0}
+    50%  {-webkit-mask-size: auto,25px 25px,25px 25px,30px 30px,30px 30px,25px 25px,0 0,0 0,0 0}
+    60%  {-webkit-mask-size: auto,25px 25px,25px 25px,30px 30px,30px 30px,25px 25px,25px 25px,0 0,0 0}
+    70%  {-webkit-mask-size: auto,25px 25px,25px 25px,30px 30px,30px 30px,25px 25px,25px 25px,25px 25px,0 0}
+    80%,
+    100% {-webkit-mask-size: auto,25px 25px,25px 25px,30px 30px,30px 30px,25px 25px,25px 25px,25px 25px,200% 200%}
+    }
+  </style>
+  <loading id="loading" class="fixed top-0 left-0 overflow-hidden w-full h-full z-[9999] transition duration-300">
+    <div class="w-full h-full flex justify-center items-center bg-zinc-900 opacity-90">
+      <div class="loader"></div>
+    </div>
+  </loading>
+
+
+  {{-- --------------------form đăng nhập------------------------------ --}}
   <div id="loggin-form" class="hidden fixed top-0 left-0 overflow-hidden w-full h-full z-50 transition duration-300 py-3 shadow-black shadow-xl">
     <div class="form relative md:w-1/2 w-[90%] md:translate-x-1/2 translate-x-[5%] translate-y-[20%] p-10 bg-black rounded-xl flex justify-center shadow-2xl shadow-black">
       <div class="loggin w-full"> 
         <div class="flex justify-center">
           <h3 class="text-4xl font-bold text-blue-300">Đăng nhập</h3>
         </div>
-        <form action="{{route('login')}}" method="post">
+        <form id="form-login" action="{{route('login')}}" method="post" class="flex justify-center">
           @csrf
-          <div class="form-group w-full mt-20 text-xl font-semibold inline-grid justify-center">
-            <div class="form-input mb-5 lg:min-w-[350px] min-w-[200px]">
+          <div class="form-group mt-20 text-xl font-semibold xl:max-w-[400px] sm:max-w-[300px] w-full">
+            <div class="form-input mb-5">
               <input id="email" type="text" name="account_login" class="text-lg p-4 rounded-xl bg-transparent border mt-2 w-full" required>
               <label class="label">Email</label>
-              <span class="message text-lg text-red-500 pl-2">&nbsp;</span>
+              <span class="message text-lg text-red-500 pl-2 w-full">&nbsp;</span>
             </div>
-            <div class="form-input lg:min-w-[350px] min-w-[200px]">
+            <div class="form-input">
               <input id="password" type="password" name="password_login" class="text-lg p-4 rounded-xl bg-transparent border mt-2 w-full" required>
               <label class="label">Mật khẩu</label>
-              <span class="message text-lg text-red-500 pl-2">&nbsp;</span>
+              <span class="message text-lg text-red-500 pl-2 w-full">&nbsp;</span>
             </div>
-            <a href="{{route('login_page')}}" class="w-full text-right text-green-300 mt-4 text-lg font-normal underline">Quên mật khẩu</a>
-            <button type="submit"class=" bg-blue-900 mt-10 p-4 rounded-2xl hover:text-white transition duration-200">Đăng nhập</button>
+            <div class="w-full text-right text-green-300 mt-4 text-lg font-normal underline">
+              <a href="{{route('login_page')}}" class="">Quên mật khẩu</a>
+            </div>
+            <div class="w-full flex justify-center">
+              <button type="submit"class="w-full bg-blue-900 mt-10 p-4 rounded-2xl hover:text-white transition duration-200">Đăng nhập</button>
+            </div>
           </div>
         </form>
         <script>
           document.addEventListener('DOMContentLoaded', function () {
               Validator({
-              form: '.form-group',
+              form: '#form-login',
               formGroupSelector: '.form-input',
               errorSelector: '.message',
               rules: [
                 Validator.isEmail('#email'),
-                Validator.minLength('#password', 8),
+                Validator.isPassword('#password',"Mật khẩu không hợp lệ!!"),
               ],
               onSubmit: function (data) {
-                // Call API
-                console.log(data);
+                document.getElementById('form-login').submit();
               }
             });
           });
@@ -137,7 +211,11 @@
       </div>
     </div>
   </div>
-  <nav id="header" class="z-50 fixed justify-between bg-black backdrop-blur-[5px] w-full h-24 flex items-center px-2 transition duration-300 py-3" >
+
+
+  {{-- --------------------navbar-------------------------------------- --}}
+  <nav id="header" class="z-[999999] fixed justify-between bg-black backdrop-blur-[5px] w-full h-24 flex items-center px-2 transition duration-300 py-3" >
+    {{-- ---------------menu btn androi-----------------------}}
     <div class="menu lg:hidden mx-6">
       <i class="menu-icon text-3xl cursor-pointer">
           <svg id="icon1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">
@@ -149,6 +227,8 @@
           </svg>
       </i>
     </div>
+
+    {{-- -----------------navbar content left--------------------------- --}}
     <div class="flex justify-normal">
       <div class="logo flex items-center lg:mr-20 lg:px-5 font-black text-red-600">
         <a href="{{route('home')}}">
@@ -184,16 +264,20 @@
           @foreach ($category as $cate) 
           <li class="py-5 lg:px-8 w-[100%] whitespace-nowrap"><a href="{{route('category', $cate->slug)}}" class="hover:text-white px-3">{{$cate->title}}</a></li>
           @endforeach
-          {{-- <li class="py-5 lg:px-8 w-[100%] whitespace-nowrap"><a href="{{route('new_movie')}}" class="text-blue-500 hover:text-blue-300 px-3">Thêm phim</a></li> --}}
+          <li class="py-5 lg:px-8 w-[100%] whitespace-nowrap"><a href="{{route('new_movie')}}" class="text-blue-500 hover:text-blue-300 px-3">Thêm phim</a></li>
         </ul>
       </div>
     </div>
+
+    {{-- -----------------navbar content right--------------------- --}}
     <div class="flex items-center gap-6 2xl:pl-20 lg:justify-end h-full">
+
+      {{-- -------------------------search form------------------------- --}}
       <form id="search-form" role="search" action="{{route('search')}}" method="GET">
         <div class="search">
-          <div id="search-icon" class="relative flex items-center">
-            <input id="search-text" name="search" class="absolute top-[-5px] right-0 pl-6 pr-6 py-2 bg-transparent text-lg ease-linear duration-300" type="text" placeholder="......"  autocomplete="off">
-            <i class="z-10 cursor-pointer pr-2 relative">
+          <div class="relative flex items-center">
+            <input id="search-text" name="search" class="absolute w-10 top-[-5px] right-0 pl-6 pr-6 py-2 bg-transparent text-lg ease-linear duration-300" type="text" placeholder="......"  autocomplete="off">
+            <i id="search-icon" class="z-10 cursor-pointer pr-2 relative">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
@@ -201,6 +285,8 @@
             </div>
         </div>
       </form>
+
+      {{-- -------------------------user form------------------------- --}}
       <div class="user relative group">
         <div class="icon lg:p-5 lg:mx-5 h-full flex items-center cursor-pointer hover:text-white">
             @if(Session::has('user'))
@@ -288,6 +374,8 @@
      </div>
     </div>
   </nav>
+
+  
   <div class="pt-24"></div>
   
   @yield('content')
@@ -320,33 +408,39 @@
   </footer> 
 </body>
 
+<script src="{{asset('js/index.js')}}"></script>
 <script src="{{asset('js/header.js')}}"></script>
+<script src="{{asset('js/trending_tab.js')}}"></script>
 <script src="{{asset('js/validator.js')}}"></script>
+
+{{-- hiệu ứng ấn vào icon tìm kiếm --}}
 <script>
-  //hiệu ứng ấn vào icon tìm kiếm
-const searchText = document.getElementById('search-text');
-const searchIcon = document.getElementById('search-icon');
-searchText.classList.add('w-10');
-let isSearchVisible = true;
-searchIcon.addEventListener('click', function () {
-    if (isSearchVisible) {
-        searchText.classList.remove('w-10');
-        searchText.classList.add('w-[10rem]');
-        searchText.classList.add('md:w-[15rem]');
-        searchText.classList.add('2xl:w-[22rem]');
-        searchText.classList.add('border');
-        searchText.classList.add('border-white');
-        searchText.classList.add('rounded-md');
-    } else {
-        searchText.classList.add('w-10');
-        searchText.classList.remove('border');
-        searchText.classList.remove('border-white');
-        searchText.classList.remove('rounded-md');
-        searchText.classList.remove('w-[10rem]');
-        searchText.classList.remove('md:w-[15rem]');
-        searchText.classList.remove('2xl:w-[22rem]');
-    }
-    isSearchVisible = !isSearchVisible;
-});
+  const searchText = document.getElementById('search-text');
+  const searchIcon = document.getElementById('search-icon');
+  searchText.classList.add('w-10');
+  let isSearchVisible = true;
+
+  document.addEventListener('DOMContentLoaded', function () {
+      searchIcon.addEventListener('click', function () {
+          if (isSearchVisible) {
+              searchText.classList.remove('w-10');
+              searchText.classList.add('w-[10rem]');
+              searchText.classList.add('md:w-[15rem]');
+              searchText.classList.add('2xl:w-[22rem]');
+              searchText.classList.add('border');
+              searchText.classList.add('border-white');
+              searchText.classList.add('rounded-md');
+          } else {
+              searchText.classList.add('w-10');
+              searchText.classList.remove('border');
+              searchText.classList.remove('border-white');
+              searchText.classList.remove('rounded-md');
+              searchText.classList.remove('w-[10rem]');
+              searchText.classList.remove('md:w-[15rem]');
+              searchText.classList.remove('2xl:w-[22rem]');
+          }
+          isSearchVisible = !isSearchVisible;
+      });
+  });
 </script>
 </html>

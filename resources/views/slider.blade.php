@@ -46,7 +46,7 @@
     <div class="hot-movie relative w-full overflow-auto select-none lg:h-[450px] sm:h-[380px] h-[350px]" >
         <div class="list-movie absolute flex w-max lg:top-[20px] sm:top-[15px] top-[10px] left-0 sm:gap-[20px] gap-[10px]">
             @foreach ($new_movie->take(15) as $mov) 
-            <a href="{{route('movie', $mov->slug)}}" class="item-movie scale-100 lg:w-[250px] sm:w-[220px] w-[200px] transition-all duration-300 ease-linear scroll-smooth relative hover:scale-110 ">
+            <a href="{{route('movie', $mov->slug)}}" class="item-movie scale-100 lg:w-[250px] sm:w-[220px] w-[200px] lg:h-[375px] sm:h-[330px] h-[300px] transition-all duration-300 ease-linear scroll-smooth relative hover:scale-110 ">
                 <img class="rounded-lg w-full h-full" src="{{$mov->poster}}" alt="">
                 <div class="movie-name absolute rounded-b-lg left-0 right-0 bottom-0 text-center bg-[rgba(0,0,0,0.7)] py-2">
                     <div class="title text-2xl py-1">{{$mov->title}}</div>

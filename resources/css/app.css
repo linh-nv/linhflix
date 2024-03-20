@@ -16,6 +16,7 @@ body {
     font-size: 1.6rem;
     line-height: 2.5rem /* 40px */;
 }
+
 /* loggin form */
 #loggin-form::after {
     content: '';
@@ -190,6 +191,9 @@ body {
         }
     }
 }
+.backgound-poster-movie {
+    height: calc(0.7 * (100vw) * (720 / 1280));
+}
 .hot-movie {
     scroll-behavior: smooth;
     scroll-snap-type: both;
@@ -231,10 +235,6 @@ body {
     opacity: 0.85;
     background: #000;
     transition: top 0.3s, font-size 0.3s, color 0.3s; /* Thêm transition */
-}
-
-.form-input input:focus {
-    border: 1px solid #1a73e8;
 }
 
 .form-input input:focus + label,
@@ -315,4 +315,27 @@ body {
     .item-movie {
         width: calc(50vw - 15px);
     }
+    .backgound-poster-movie {
+        height: calc(100vw * (720 / 1280));
+    }
+    .backgound-poster-movie::before {
+        width: 70%;
+        background: linear-gradient(to right, #18181b, rgba(0, 0, 0, 0) 60%);
+        box-shadow: 10px -20px 50px 50px #18181b inset;
+    }
+}
+
+.alert-message {
+    font-size: 12px;
+    color: #000;
+}
+
+.alert-success {
+    border-top: 6px solid #86efac;
+    background-color: #dcfce7;
+}
+
+.alert-error {
+    border-top: 4px solid #fca5a5;
+    background-color: #fee2e2;
 }

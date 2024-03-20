@@ -10,7 +10,7 @@
     <div class="register_form inline-grid w-full justify-center text-xl mt-10">
       <div id="email_register" class="form-input inline-grid">
         <span>Nhập tài khoản email</span>
-        <div class="notification" style="margin-bottom: 0"></div>
+        <span class="notification" style="margin-bottom: 0"></span>
         <input id="email_input" type="text" name="email_register" class="p-2 rounded-lg">
         <span id="message_email" class="message text-lg text-red-500 pl-2">&nbsp;</span>
         <div class="w-full flex justify-center py-10 items-center">
@@ -25,20 +25,20 @@
       {{------------- thêm thông tin cơ bản --------}}
       <div id="basic_information" class="hidden">    
           {{-- thêm id social media --}}
-          <div class="form-input inline-grid">
+          <div class="form-input-name inline-grid">
               <span>Nhập tên</span>
               <input id="name_register" type="text" name="name_register" class="p-2 rounded-lg">
-              <span class="message text-lg text-red-500 pl-2">&nbsp;</span>
+              <div class="form-notifi"></div>
           </div>
-          <div class="form-input inline-grid">
+          <div class="form-input-pass inline-grid">
               <span>Nhập mật khẩu</span>
               <input id="pass_register" type="password" name="pass_register" class="p-2 rounded-lg">
-              <span class="message text-lg text-red-500 pl-2">&nbsp;</span>
+              <div class="form-notifi"></div>
           </div>
-          <div class="form-input inline-grid">
+          <div class="form-input-re_pass inline-grid">
               <span>Nhập lại mật khẩu</span>
               <input id="re-pass_register" type="password" class="p-2 rounded-lg">
-              <span class="message text-lg text-red-500 pl-2">&nbsp;</span>
+              <div class="form-notifi"></div>
           </div>
           <div class="w-full flex justify-center py-10 items-center">
               <button id="register_btn" type="submit" class="create_btn_noGG w-full flex justify-center items-center text-center cursor-pointer bg-blue-900 text-2xl font-bold p-4 rounded-xl hover:text-white">Tạo tài khoản</button>
@@ -59,13 +59,52 @@
         </div>
       </div>
     </div>
-    <img src="https://onlinegiftools.com/images/examples-onlinegiftools/netflix-stream-opaque.gif" alt="" class="loading_register absolute hidden w-full h-[80%] bg-black top-0 left-0">
+    
+    {{-- loading --}}
+    <div class="loading_register absolute w-full h-[80%] bg-black top-0 left-0 flex justify-center items-center">
+      <div class="loading_register_send_email"></div>
+      <style>
+        .loading_register .loading_register_send_email {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          border: 8px solid #d1914b;
+          box-sizing: border-box;
+          --c:no-repeat radial-gradient(farthest-side, #d64123 94%,#0000);
+          --b:no-repeat radial-gradient(farthest-side, #000 94%,#0000);
+          background:
+            var(--c) 11px 15px,
+            var(--b) 6px 15px,    
+            var(--c) 35px 23px,
+            var(--b) 29px 15px,    
+            var(--c) 11px 46px,
+            var(--b) 11px 34px,    
+            var(--c) 36px 0px,
+            var(--b) 50px 31px,
+            var(--c) 47px 43px,
+            var(--b) 31px 48px,    
+            #f6d353; 
+          background-size: 15px 15px,6px 6px;
+          animation: l4 3s infinite;
+        }
+        @keyframes l4 {
+          0%     {-webkit-mask:conic-gradient(#0000 0     ,#000 0)}
+          16.67% {-webkit-mask:conic-gradient(#0000 60deg ,#000 0)}
+          33.33% {-webkit-mask:conic-gradient(#0000 120deg,#000 0)}
+          50%    {-webkit-mask:conic-gradient(#0000 180deg,#000 0)}
+          66.67% {-webkit-mask:conic-gradient(#0000 240deg,#000 0)}
+          83.33% {-webkit-mask:conic-gradient(#0000 300deg,#000 0)}
+          100%   {-webkit-mask:conic-gradient(#0000 360deg,#000 0)}
+        }
+      </style>
+    </div>
+
     <div class="w-full flex justify-center text-xl">
       Đã có tài khoản?&nbsp;
       <a href="{{route('login_page')}}" class="text-blue-500 underline">Đăng nhập</a>
     </div>
     {{-- </form> --}}
-    <script>
+    {{-- <script>
       document.addEventListener('DOMContentLoaded', function () {
           Validator({
           form: '.register_form',
@@ -86,62 +125,125 @@
           }
         });
       });
-    </script>
+    </script> --}}
     <script>
-    $(document).ready(function() {
-        // --------------------- Kiểm tra xem email đã tồn tại chưa ----------------------
-      $('#email_register .create_btn_noGG').click(function() {
-        $.ajax({
-            url: '{{ route('check_email') }}',
-            method: 'GET',
-            data: {
-                email: $('#email_input').val(),
-            },
-            success: function(response) {
-                if (response.exists === true) {
-                    // Email đã tồn tại
-                    $('#email_register .notification').append('<span class="text-red-400">Email đã tồn tại!!</span>');
-                    $('#email_input').attr('style', 'border-color: red;')
-                }else if (response.exists === null) {
-                    // để trống email
-                    $('#email_register .notification').append('<span class="text-red-400">Không được để trống email!!</span>');
-                    $('#email_input').attr('style', 'border-color: red;');
-                }
-                else{
-                    $('#email_register').hide();
-                    $('#basic_information').show();
-                }
-            },
-            error: function(xhr, status, error) {
-                console.log(error);
-            }
-        });
-        $('#email_input').attr('style', '')
-        $('#email_register .notification').empty();
+    $(document).ready(function () {
+      $('.loading_register').hide();
+
+    // --------------------- Kiểm tra xem email đã tồn tại chưa ----------------------
+
+    $('#email_register .create_btn_noGG').click(function () {
+      $('#email_input').attr('style', '');
+      $('#email_register .notification').empty();
+      const email = $('#email_input').val();
+      // Kiểm tra định dạng email bằng regex
+      if (!validateEmail(email)) {
+          // Định dạng email không hợp lệ, hiển thị thông báo và ngăn chặn tiếp tục xử lý
+          $('#email_register .notification').append('<span class="text-lg text-red-400">Email không hợp lệ!!</span>');
+          $('#email_input').attr('style', 'border-color: red;');
+          return;
+      } else {
+          $.ajax({
+              url: "{{ route('check_email') }}",
+              method: 'GET',
+              data: {
+                  email: $('#email_input').val(),
+              },
+              success: function (response) {
+                  if (response.exists === true) {
+                      // Email đã tồn tại
+                      $('#email_register .notification').append(
+                          '<span class="text-red-400">Email đã tồn tại!!</span>',
+                      );
+                      $('#email_input').attr('style', 'border-color: red;');
+                  } else {
+                      $('#email_register').hide();
+                      $('#basic_information').show();
+                  }
+              },
+              error: function (xhr, status, error) {
+                  console.log(error);
+              },
+          });
+          $('#email_input').attr('style', '');
+          $('#email_register .notification').empty();
+        }
       });
 
-      //------------------------ Gửi email xác minh --------------------------
-      $('#register_btn').click(function() {
+      // Hàm kiểm tra định dạng email
+      function validateEmail(email) {
+          const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+          return regex.test(email);
+      }
+
+      // Hàm kiểm tra trường tên
+      function validateName(name) {
+          const regex = /^[a-zA-ZÀ-ỹ ]{2,30}$/; // Chỉ chấp nhận ký tự chữ, khoảng trắng, từ 2 đến 30 ký tự
+          return regex.test(name);
+      }
+
+      // Hàm kiểm tra trường mật khẩu
+      function validatePassword(password) {
+          const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/; // Ít nhất 8 ký tự, ít nhất một chữ cái viết thường, ít nhất một chữ cái viết hoa và ít nhất một số
+          return regex.test(password);
+      }
+
+      // Sự kiện click cho nút đăng ký
+      $('#register_btn').click(function () {
+        $('#name_register').attr('style', '');
+        $('#pass_register').attr('style', '');
+        $('#re-pass_register').attr('style', '');
+        $('.form-notifi').empty();
+        // Lấy giá trị các trường
+        const email = $('#email_input').val();
+        const name = $('#name_register').val();
+        const password = $('#pass_register').val();
+        const re_password = $('#re-pass_register').val();
+
+        if (!validateName(name) || !validatePassword(password) || re_password !== password || re_password === '') {
+            if (!validateName(name)) {
+                $('.form-input-name .form-notifi').append(
+                    '<span class="text-lg text-red-400">Tên không hợp lệ!!</span>',
+                );
+                $('#name_register').attr('style', 'border-color: red;');
+            }
+            if (!validatePassword(password)) {
+                $('.form-input-pass .form-notifi').append(
+                    '<span class="text-lg text-red-400">Mật khẩu phải trên 8 ký tự, phải có một chữ cái viết thường, một chữ cái viết hoa và một số!!</span>',
+                );
+                $('#pass_register').attr('style', 'border-color: red;');
+            }
+            if (re_password !== password || re_password === '') {
+                $('.form-input-re_pass .form-notifi').append(
+                    '<span class="text-lg text-red-400">Nhập lại mật khẩu không chính xác!!</span>',
+                );
+                $('#re-pass_register').attr('style', 'border-color: red;');
+            }
+
+            return;
+        } else {
+          // Nếu các trường đều hợp lệ, gửi request AJAX
+          // Ẩn verification và hiện loading
           $('.verification').show();
           $('.loading_register').show();
-
           $.ajax({
-              url: '{{ route('email_verification') }}',
+              url: "{{ route('email_verification') }}",
               method: 'POST',
               data: {
-                _token: $('#csrf_token').val(),
-                email: $('#email_input').val(),
-                name: $('#name_register').val(),
-                password: $('#pass_register').val(),
+                  _token: $('#csrf_token').val(),
+                  email: email,
+                  name: name,
+                  password: password,
               },
-              success: function(response) {
+              success: function (response) {
                   $('.loading_register').hide();
               },
-              error: function(xhr, status, error) {
+              error: function (xhr, status, error) {
                   console.log(error);
-              }
+              },
           });
-        });
+        }
+      });
     });
     </script>
     <div class="w-full justify-center text-center mt-20 pb-10">
