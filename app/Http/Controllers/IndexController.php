@@ -7,7 +7,7 @@ use App\Models\Country;
 use App\Models\Episode;
 use App\Models\Genre;
 use App\Models\Movie;
-use App\Models\Movie_Follower;
+use App\Models\Movie_Follow;
 use App\Models\Movie_Genre;
 use App\Models\View;
 use Illuminate\Support\Facades\Http;
@@ -166,7 +166,7 @@ class IndexController extends Controller
         if (Session::has('user')) {
             $user = Session::get('user');
             $user_id = $user['id'];
-            $follower = Movie_Follower::where('movie_id', $movie->id)->where('user_id', $user_id)->first();
+            $followed = Movie_Follow::where('movie_id', $movie->id)->where('user_id', $user_id)->first();
         }
         $view_day = View::with('movie')->whereDate('view_date', now()->toDateString())->orderBy('view_number', 'DESC')->get();
         $view_month_total = View::with('movie')->where('view_date', '>=', now()->startOfMonth()->toDateString())
@@ -186,7 +186,7 @@ class IndexController extends Controller
         ->get();
 
         // return response()->json($episode);
-        return view('pages.client.movie', compact(isset($follower) ? 'follower' : [], 'startEpisode', 'penultimateEpisode', 'lastEpisode', 'recent_episodes', 'total_episode', 'new_movie', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'movie', 'category', 'genre', 'genre_movie', 'country'));
+        return view('pages.client.movie', compact(isset($followed) ? 'followed' : [], 'startEpisode', 'penultimateEpisode', 'lastEpisode', 'recent_episodes', 'total_episode', 'new_movie', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'movie', 'category', 'genre', 'genre_movie', 'country'));
     }
     public function watch($slug){
         $category = Category::orderBy('position','ASC')->get();
@@ -274,7 +274,7 @@ class IndexController extends Controller
             ->orWhere('name_eng', 'LIKE', '%'.$search.'%')
             ->orWhere('year', 'LIKE', '%'.$search.'%')
             ->orderBy('view','DESC')
-            ->get();
+            ->paginate(36);
             
             $view_day = View::with('movie')->whereDate('view_date', now()->toDateString())->orderBy('view_number', 'DESC')->get();
             $view_month_total = View::with('movie')->where('view_date', '>=', now()->startOfMonth()->toDateString())
@@ -304,7 +304,7 @@ class IndexController extends Controller
             $genre = Genre::orderBy('id','DESC')->get();
             $country = Country::orderBy('id','ASC')->get();
 
-            $movie = Movie::where('director', 'LIKE', '%'.$director.'%')->orderBy('year', 'DESC')->orderBy('view','DESC')->get();
+            $movie = Movie::where('director', 'LIKE', '%'.$director.'%')->orderBy('year', 'DESC')->orderBy('view','DESC')->paginate(36);
             $view_day = View::with('movie')->whereDate('view_date', now()->toDateString())->orderBy('view_number', 'DESC')->get();
             $view_month_total = View::with('movie')->where('view_date', '>=', now()->startOfMonth()->toDateString())
             ->groupBy('movie_id') // Nhóm theo movie_id
@@ -334,7 +334,7 @@ class IndexController extends Controller
             $genre = Genre::orderBy('id','DESC')->get();
             $country = Country::orderBy('id','ASC')->get();
 
-            $movie = Movie::where('actor', 'LIKE', '%'.$actor.'%')->orderBy('year', 'DESC')->orderBy('view','DESC')->get();
+            $movie = Movie::where('actor', 'LIKE', '%'.$actor.'%')->orderBy('year', 'DESC')->orderBy('view','DESC')->paginate(36);
             $view_day = View::with('movie')->whereDate('view_date', now()->toDateString())->orderBy('view_number', 'DESC')->get();
             $view_month_total = View::with('movie')->where('view_date', '>=', now()->startOfMonth()->toDateString())
             ->groupBy('movie_id') // Nhóm theo movie_id

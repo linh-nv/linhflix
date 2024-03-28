@@ -158,7 +158,7 @@ Validator.isName = function (selector, message) {
     return {
         selector: selector,
         test: function (value) {
-            var regex = /^[a-zA-Z ]{2,30}$/; // Chỉ chấp nhận ký tự chữ và khoảng trắng, từ 2 đến 30 ký tự
+            var regex = /^[a-zA-ZÀ-ỹ ]{2,30}$/; // Chỉ chấp nhận ký tự chữ, khoảng trắng, từ 2 đến 30 ký tự
             return regex.test(value) ? undefined : message || 'Tên không hợp lệ!!';
         },
     };
@@ -191,6 +191,15 @@ Validator.isConfirmed = function (selector, getConfirmValue, message) {
         selector: selector,
         test: function (value) {
             return value === getConfirmValue() ? undefined : message || 'Giá trị nhập vào không chính xác';
+        },
+    };
+};
+
+Validator.changeValue = function (selector, getConfirmValue, message) {
+    return {
+        selector: selector,
+        test: function (value) {
+            return value !== getConfirmValue() ? undefined : message || 'Chưa thay đổi giá trị';
         },
     };
 };

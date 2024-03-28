@@ -32,6 +32,8 @@ Route::get('/goi-y-phim',[IndexController::class, 'movie_suggest'])->name('movie
 Route::get('/them-phim',[IndexController::class, 'add_movie'])->name('add_movie');
 
 // ---------------------------------User routes----------------------------------
+Route::get('/thong-tin-nguoi-dung',[UserController::class, 'user_info'])->name('user_info');
+Route::post('/cap-nhat-thong-tin',[UserController::class, 'update'])->name('update_info_user');
 Route::get('/dang-nhap',[UserController::class, 'login_page'])->name('login_page');
 Route::post('/login',[UserController::class, 'login'])->name('login');
 Route::get('/dang-ky',[UserController::class, 'register'])->name('register');
@@ -39,6 +41,7 @@ Route::get('/dang-xuat',[UserController::class, 'logout'])->name('logout');
 Route::post('/them-tai-khoan',[UserController::class, 'create_social_account'])->name('create_social_account');
 Route::get('/social_register',[UserController::class, 'social_register'])->name('social_register');
 Route::get('/kiem-tra-email',[UserController::class, 'check_email'])->name('check_email');
+Route::get('/tu-phim',[UserController::class, 'follow_page'])->name('follow_page');
 Route::get('/follow',[UserController::class, 'follow'])->name('follow');
 Route::get('/unfollow',[UserController::class, 'unfollow'])->name('unfollow');
 // Social media authentication routes 

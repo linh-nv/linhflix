@@ -83,7 +83,7 @@
     }
   </style>
   <loading id="loading" class="fixed top-0 left-0 overflow-hidden w-full h-full z-[9999] transition duration-300">
-    <div class="w-full h-full flex justify-center items-center bg-zinc-900 opacity-90">
+    <div class="w-full h-full flex justify-center items-center bg-black opacity-70">
       <div class="loader"></div>
     </div>
   </loading>
@@ -328,7 +328,7 @@
                   <img src="{{asset('uploads/images/user.jpg')}}" alt="" class="h-16 rounded-[50%]">
                   <span class="text-2xl font-semibold truncate">{{$user->name}}</span>
               </li>
-              <a href="">
+              <a href="{{route('user_info')}}">
                   <li class="flex items-center gap-4 bg-slate-600 p-4 mt-4 rounded-xl hover:text-white">
                       <i class="icon-user">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -338,8 +338,8 @@
                       <span class="text-xl">Cài đặt thông tin cá nhân</span>
                   </li>
               </a>
-              <a href="">
-                  <li class="flex items-center gap-4 bg-slate-600 p-4 mt-4 rounded-xl hover:text-red-400 text-red-300">
+              <a href="{{route('follow_page')}}">
+                  <li class="flex items-center gap-4 bg-slate-600 p-4 mt-4 rounded-xl hover:text-red-200 text-red-300">
                       <i class="icon-user">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                               <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
@@ -375,7 +375,6 @@
     </div>
   </nav>
 
-  
   <div class="pt-24"></div>
   
   @yield('content')

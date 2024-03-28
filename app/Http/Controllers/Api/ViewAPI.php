@@ -23,6 +23,7 @@ class ViewAPI extends Controller
     public function store(Request $request)
     {
         return View::create($request->all());
+        
     }
 
     /**
@@ -33,12 +34,12 @@ class ViewAPI extends Controller
         $views = View::where('id', $id)->first();
         if(empty($views)){
             $data = [
-                'status: ' => 'false',
-                'message: ' => 'undefine'
+                'status: ' => '404',
+                'message: ' => 'Not Found'
             ];
-            return response()->json($data);
+            return response($data, 404);
         }else{
-            return $views; 
+            return response($views, 200);
         } 
     }
 

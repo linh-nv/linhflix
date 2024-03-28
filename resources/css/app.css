@@ -31,6 +31,20 @@ body {
     z-index: -1;
 }
 
+/* alert */
+#alert::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    backdrop-filter: blur(2px); /* Cho các trình duyệt hỗ trợ */
+    -webkit-backdrop-filter: blur(2px); /* Cho Safari 9+ và Safari trên iOS 9+ */
+    z-index: -1;
+}
+
 .active-tab {
     border-radius: 5px;
     background-color: #52525b;
@@ -330,12 +344,12 @@ body {
     color: #000;
 }
 
-.alert-success {
+.success {
     border-top: 6px solid #86efac;
     background-color: #dcfce7;
 }
 
-.alert-error {
+.error {
     border-top: 4px solid #fca5a5;
     background-color: #fee2e2;
 }

@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\Genre;
-use App\Models\Movie_Follower;
+use App\Models\Movie;
+use App\Models\Movie_Follow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
+use App\Models\View;
 use Laravel\Socialite\Facades\Socialite;
 
 use Illuminate\Support\Facades\Mail;
@@ -81,6 +83,7 @@ class UserController extends Controller
             $user->save();
             $user->makeHidden('password');
             Session::put('user', $user); 
+            Session::flash('success', 'Xác thực thành công!!'); 
             return redirect()->to('/');
             // return $_POST;
         }else{
@@ -99,6 +102,8 @@ class UserController extends Controller
     public function logout(){
         // Xóa tất cả các session
         Session::flush();
+        Session::flash('success', 'Đã đăng xuất!!'); 
+ 
         return redirect()->back();
     }
     public function login_page(){
@@ -117,6 +122,8 @@ class UserController extends Controller
                     $user->makeHidden('password');
                     Session::flush();
                     Session::put('user', $user); 
+                    Session::flash('success', 'Đăng nhập thành công!!'); 
+
                     return redirect()->back();
                 }else{
                     Session::flash('login_false', 'Tài khoản chưa xác thực email!!');
@@ -131,7 +138,7 @@ class UserController extends Controller
         }
     }
 
-    // -------------- Xác minh email ------------------
+    // -------------- Xác minh email (ajax) ------------------
     public function email_verification() {
 
         if(isset($_POST)){
@@ -168,6 +175,8 @@ class UserController extends Controller
             $user->save();
 
             Session::put('user', $user); 
+            Session::flash('success', 'Xác thực thành công, chào mừng '.$user->name.'!!'); 
+
             return redirect()->to('/');
         }else{
             Session::flash('verified', 'Tài khoản đã xác thực rồi!!'); 
@@ -175,12 +184,78 @@ class UserController extends Controller
         }
     }
     // ------------------------------Follow movie--------------------------
+    public function follow_page(){
+        if (Session::has('user')) {
+            $category = Category::orderBy('position','ASC')->get();
+            $genre = Genre::orderBy('id','DESC')->get();
+            $country = Country::orderBy('id','ASC')->get();
+
+            $user = Session::get('user');
+            $user_id = $user['id'];
+            $movie = Movie_Follow::with('movie')->where('user_id', $user_id)->orderBy('id','DESC')->paginate(36);
+
+            $new_movie = Movie::orderBy('year', 'DESC')-> orderBy('view','DESC')->paginate(36);
+            $view_day = View::with('movie')->whereDate('view_date', now()->toDateString())->orderBy('view_number', 'DESC')->get();
+            $view_month_total = View::with('movie')->where('view_date', '>=', now()->startOfMonth()->toDateString())
+            ->groupBy('movie_id') // Nhóm theo movie_id
+            ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
+            ->orderBy('total_views', 'DESC')
+            ->get();
+
+            $view_year_total = View::with('movie')->where('view_date', '>=', now()->startOfYear())
+            ->groupBy('movie_id') // Nhóm theo movie_id
+            ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
+            ->orderBy('total_views', 'DESC')
+            ->get();
+            $view_all_total = View::with('movie')->groupBy('movie_id') // Nhóm theo movie_id
+            ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
+            ->orderBy('total_views', 'DESC')
+            ->get();
+            // return $movie;
+            return view('pages.client.user.movie_follow', compact('new_movie', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'movie', 'category', 'genre', 'country'));
+        }else{
+            return redirect()->to('/');
+        }
+    }
+    public function user_info(){
+        if (Session::has('user')) {
+            $category = Category::orderBy('position','ASC')->get();
+            $genre = Genre::orderBy('id','DESC')->get();
+            $country = Country::orderBy('id','ASC')->get();
+
+            $user = Session::get('user');
+            $user_id = $user['id'];
+            $user_info = User::where('id', $user_id)->first();
+
+            $new_movie = Movie::orderBy('year', 'DESC')-> orderBy('view','DESC')->paginate(36);
+            $view_day = View::with('movie')->whereDate('view_date', now()->toDateString())->orderBy('view_number', 'DESC')->get();
+            $view_month_total = View::with('movie')->where('view_date', '>=', now()->startOfMonth()->toDateString())
+            ->groupBy('movie_id') // Nhóm theo movie_id
+            ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
+            ->orderBy('total_views', 'DESC')
+            ->get();
+
+            $view_year_total = View::with('movie')->where('view_date', '>=', now()->startOfYear())
+            ->groupBy('movie_id') // Nhóm theo movie_id
+            ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
+            ->orderBy('total_views', 'DESC')
+            ->get();
+            $view_all_total = View::with('movie')->groupBy('movie_id') // Nhóm theo movie_id
+            ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
+            ->orderBy('total_views', 'DESC')
+            ->get();
+            // return $movie;
+            return view('pages.client.user.user_info', compact('new_movie', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total', 'user_info', 'category', 'genre', 'country'));
+        }else{
+            return redirect()->to('/');
+        }
+    }
     public function follow(Request $request){
         if (isset($request)){
-            $movie_follower = new Movie_Follower();
-            $movie_follower->movie_id = $request->movie_id;
-            $movie_follower->user_id = $request->user_id;
-            $movie_follower->save();
+            $movie_follow= new Movie_Follow();
+            $movie_follow->movie_id = $request->movie_id;
+            $movie_follow->user_id = $request->user_id;
+            $movie_follow->save();
             return true;
         }else{
             return false;
@@ -188,11 +263,32 @@ class UserController extends Controller
     }
     public function unfollow(Request $request){
         if (isset($request)){
-            $movie_follower = Movie_Follower::where('movie_id', $request->movie_id)->where('user_id', $request->user_id)->first();
-            $movie_follower->delete();
+            $movie_follow = Movie_Follow::where('movie_id', $request->movie_id)->where('user_id', $request->user_id)->first();
+            $movie_follow->delete();
             return true;
         }else{
             return false;
+        }
+    }
+    public function update(Request $request){
+        if(isset($request->name_info)){
+            $user = User::where('id', $request->user_id)->first();
+            $user->name = $request->name_info;
+            $user->save();
+            Session::flash('success', 'Thay đổi thông tin thành công!!');
+
+            return redirect()->back();
+        }else if(isset($request->avatar)){
+            
+        }else if (isset($request->github_id)){
+            $user = User::where('id', $request->user_id)->first();
+            $user->github_id = null;
+            $user->save();
+            Session::flash('success', 'Thay đổi thông tin thành công!!');
+
+        }else{
+            Session::flash('error', 'Thay đổi thông tin thất bại!!');
+            return redirect()->back();
         }
     }
 }
