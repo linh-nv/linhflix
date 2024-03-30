@@ -42,7 +42,7 @@ class MovieAPI extends Controller
         // nếu có request dữ liệu
         if(!empty($request)){
 
-            if ($request->filled(['slug', 'title', 'name_eng', 'year', 'image', 'poster']) && !$request->filled('id')) {
+            if (!$request->filled('id')) {
                             
                 // Kiểm tra xem yêu cầu đã tồn tại trong bất kỳ movie nào chưa
                 $existingMovie = Movie::where('slug', $request->slug)->first();
@@ -70,7 +70,7 @@ class MovieAPI extends Controller
             }else{
                 $data = [
                     'status: ' => 'false',
-                    'message: ' => 'Không nhập id và phải nhập đủ slug, title, name_eng, year, image, poster!!'
+                    'message: ' => 'Không nhập id!!'
                 ];
                 return response($data, Response::HTTP_BAD_REQUEST);
             }
@@ -108,48 +108,35 @@ class MovieAPI extends Controller
      */
     public function update(Request $request, string $id)
     {
-        
-        try {
-            $rules = [
-                'year' => 'integer',
-                'category_id' => 'integer',
-                'genre_id' => 'integer',
-                'country_id' => 'integer',
-                'view' => 'integer',
+        if($request->filled('id')){
+            $data = [
+                'status: ' => 'false',
+                'message: ' => 'Không sửa id!!'
             ];
-            $request->validate($rules);
-            if($request->filled('id')){
-                $data = [
-                    'status: ' => 'false',
-                    'message: ' => 'Không sửa id!!'
-                ];
-                return response($data, Response::HTTP_BAD_REQUEST);
-            }else{
-                if (!empty($request->all())){
-                    if ($request->filled('slug')) {
-                        $movie = Movie::where('slug', $request->slug)->first();
-                        if(empty($movie)){
-                            Movie::where('id', $id)->update($request->all());
-                            return Movie::with('episode')->where('id', $id)->first();
-                        }else{
-                            $data = [
-                                'status: ' => 'false',
-                                'message: ' => 'Không thể thêm, dữ liệu đã tồn tại!!'
-                            ];
-                            return response($data, Response::HTTP_CONFLICT);
-                        }
-                    }else{
+            return response($data, Response::HTTP_BAD_REQUEST);
+        }else{
+            if (!empty($request->all())){
+                if ($request->filled('slug')) {
+                    $movie = Movie::where('slug', $request->slug)->first();
+                    if(empty($movie)){
                         Movie::where('id', $id)->update($request->all());
                         return Movie::with('episode')->where('id', $id)->first();
+                    }else{
+                        $data = [
+                            'status: ' => 'false',
+                            'message: ' => 'Không thể thêm, dữ liệu đã tồn tại!!'
+                        ];
+                        return response($data, Response::HTTP_CONFLICT);
                     }
                 }else{
+                    Movie::where('id', $id)->update($request->all());
                     return Movie::with('episode')->where('id', $id)->first();
                 }
+            }else{
+                return Movie::with('episode')->where('id', $id)->first();
             }
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Xử lý lỗi và trả về phản hồi tùy chỉnh
-            return response(['message' => 'Lỗi dữ liệu', 'errors' => $e->errors()], 422);
         }
+        
     }
 
     /**

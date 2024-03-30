@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\View;
+use App\Models\Episode;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class ViewAPI extends Controller
+class EpisodeAPI extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $view = View::paginate(20);
-        return $view;
+        $episode = Episode::paginate(20);
+        return $episode;
     }
 
     /**
@@ -23,9 +23,9 @@ class ViewAPI extends Controller
      */
     public function store(Request $request){
         if(!empty($request)){
-            $view = View::where($request->all())->orderBy('id', 'desc')->get();
-            if(count($view) > 0){
-                return count($view) > 20 ? View::where($request->all())->orderBy('id', 'desc')->paginate(20) : $view;
+            $episode = Episode::where($request->all())->orderBy('id', 'desc')->get();
+            if(count($episode) > 0){
+                return count($episode) > 20 ? Episode::where($request->all())->orderBy('id', 'desc')->paginate(20) : $episode;
             }else{
                 $data = [
                     'status: ' => 'false',
@@ -34,8 +34,8 @@ class ViewAPI extends Controller
                 return response($data, Response::HTTP_NOT_FOUND);
             }
         }else{
-            $view = View::orderBy('id', 'desc')->paginate(20);
-            return $view;
+            $episode = Episode::orderBy('id', 'desc')->paginate(20);
+            return $episode;
         }
     }
     public function create(Request $request)
@@ -45,10 +45,10 @@ class ViewAPI extends Controller
 
             if (!$request->filled('id')) {
                             
-                // Kiểm tra xem yêu cầu đã tồn tại trong bất kỳ movie nào chưa
-                $existingView = View::where('movie_id', $request->movie_id)->where('view_date', now()->toDateString())->first();
+                // Kiểm tra xem yêu cầu đã tồn tại trong bất kỳ episode nào chưa
+                $existingEpisode = Episode::where('movie_id', $request->movie_id)->where('episode', $request->episode)->first();
                 
-                if ($existingView) {
+                if ($existingEpisode) {
                     // Trả về phản hồi báo lỗi phim đã tồn tại
                     $data = [
                         'status: ' => 'false',
@@ -57,13 +57,13 @@ class ViewAPI extends Controller
                     return response($data, Response::HTTP_CONFLICT);
                 } else {
                     // Nếu phim không tồn tại, thêm phim mới và trả về phản hồi thành công với status code 201
-                    $newView = new View();
-                    $newView->movie_id = $request->movie_id;
-                    $newView->view_number = $request->view_number;
-                    $newView->view_date = now()->toDateString();
-                    $newView->save();
+                    $newEpisode = new Episode();
+                    $newEpisode->movie_id = $request->movie_id;
+                    $newEpisode->linkphim = $request->linkphim;
+                    $newEpisode->episode = $request->episode;
+                    $newEpisode->save();
 
-                    return response($newView, Response::HTTP_CREATED);
+                    return response($newEpisode, Response::HTTP_CREATED);
                 }
             }else{
                 $data = [
@@ -75,9 +75,9 @@ class ViewAPI extends Controller
         }
         // nếu request không có dữ liệu
         else{
-            $view = View::orderBy('id', 'desc')->paginate(20);
+            $episode = Episode::orderBy('id', 'desc')->paginate(20);
 
-            return $view;
+            return $episode;
             // return $request;
             
         }
@@ -88,10 +88,10 @@ class ViewAPI extends Controller
      */
     public function show(string $id)
     {
-        $view = view::where('id', $id)->get();
+        $episode = Episode::where('id', $id)->get();
 
-        if(!empty($view)){
-            return $view;
+        if(!empty($episode)){
+            return $episode;
         }else{
             $data = [
                 'status: ' => 'false',
@@ -114,10 +114,10 @@ class ViewAPI extends Controller
             return response($data, Response::HTTP_BAD_REQUEST);
         } else {
             if (!empty($request->all())){
-                View::where('id', $id)->update($request->all());
-                return View::where('id', $id)->first();
+                Episode::where('id', $id)->update($request->all());
+                return Episode::where('id', $id)->first();
             } else {
-                return View::where('id', $id)->first();
+                return Episode::where('id', $id)->first();
             }
         }
     }
@@ -128,11 +128,11 @@ class ViewAPI extends Controller
      */
     public function destroy(string $id)
     {
-        $view = View::where('id', $id)->first();
+        $episode = Episode::where('id', $id)->first();
 
-        if(!empty($view)){
-            $view->delete();
-            return View::orderBy('id', 'desc')->paginate(20);
+        if(!empty($episode)){
+            $episode->delete();
+            return Episode::orderBy('id', 'desc')->paginate(20);
         }else{
             $data = [
                 'status: ' => 'false',
