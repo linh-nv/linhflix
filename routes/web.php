@@ -1,6 +1,12 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\EpisodeController;
+use App\Http\Controllers\GenreController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\MovieController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
@@ -14,6 +20,27 @@ use Laravel\Socialite\Facades\Socialite;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/test',function(){
+    return view('test'); 
+});
+// ---------------------------------Admin routes---------------------------------------
+Route::middleware(['check.login'])->group(function () {
+    // Các route hoặc controller yêu cầu đăng nhập sẽ được đặt ở đây
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::resource('/category', CategoryController::class);
+    Route::post('resorting', [CategoryController::class,'resorting'])->name('resorting');
+    
+    
+    Route::resource('/genre', GenreController::class);
+    Route::resource('/country', CountryController::class);
+    Route::resource('/movie', MovieController::class);
+    Route::get('/createFormAPI', [MovieController::class, 'createFormAPI'])->name('movie.createFormAPI');
+    Route::get('/createDetailsAPI', [MovieController::class, 'createDetailsAPI'])->name('movie.createDetailsAPI');
+    
+    Route::resource('/episode', EpisodeController::class);
+    Route::get('select-movie', [EpisodeController::class, 'select_movie'])->name('select-movie');
+
+});
 
 // ---------------------------------Client routes--------------------------------------
 Route::get('/',[IndexController::class, 'home'])->name('home');

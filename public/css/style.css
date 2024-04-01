@@ -16,6 +16,35 @@ body {
     font-size: 1.6rem;
     line-height: 2.5rem /* 40px */;
 }
+
+/* loggin form */
+#loggin-form::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    backdrop-filter: blur(10px); /* Cho các trình duyệt hỗ trợ */
+    -webkit-backdrop-filter: blur(10px); /* Cho Safari 9+ và Safari trên iOS 9+ */
+    z-index: -1;
+}
+
+/* alert */
+#alert::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    backdrop-filter: blur(2px); /* Cho các trình duyệt hỗ trợ */
+    -webkit-backdrop-filter: blur(2px); /* Cho Safari 9+ và Safari trên iOS 9+ */
+    z-index: -1;
+}
+
 .active-tab {
     border-radius: 5px;
     background-color: #52525b;
@@ -176,6 +205,9 @@ body {
         }
     }
 }
+.backgound-poster-movie {
+    height: calc(0.7 * (100vw) * (720 / 1280));
+}
 .hot-movie {
     scroll-behavior: smooth;
     scroll-snap-type: both;
@@ -202,7 +234,46 @@ body {
     left: 0;
     background: #18181b;
 }
+/* dang nhap */
+.form-input {
+    position: relative;
+}
 
+.form-group label {
+    position: absolute;
+    top: 40%;
+    left: 5%;
+    pointer-events: none;
+    transform: translateY(-50%);
+    padding: 0 5px;
+    opacity: 0.85;
+    background: #000;
+    transition: top 0.3s, font-size 0.3s, color 0.3s; /* Thêm transition */
+}
+
+.form-input input:focus + label,
+.form-input input:valid + label {
+    top: 0;
+    padding: 0 5px;
+    font-size: 12px;
+    color: #fff;
+    opacity: 1;
+}
+
+/* dang ky */
+.register_form div {
+    margin-bottom: 20px;
+    width: 25rem;
+}
+.register_form div:last-child {
+    margin-bottom: 0;
+}
+.register_form input {
+    background-color: transparent;
+    border: 1px solid #fafafa;
+    margin-top: 5px;
+    padding: 10px;
+}
 @media screen and (min-width: 1536px) {
     .item::before {
         box-shadow: 10px 10px 50px 65px #18181b inset, -10px -10px 20px 50px #18181b inset;
@@ -213,6 +284,9 @@ body {
     }
     .item-movie {
         width: calc(16.666666vw - 25px);
+    }
+    .register_form div {
+        width: 30rem;
     }
 }
 @media screen and (min-width: 1280px) and (max-width: 1536px) {
@@ -255,4 +329,27 @@ body {
     .item-movie {
         width: calc(50vw - 15px);
     }
+    .backgound-poster-movie {
+        height: calc(100vw * (720 / 1280));
+    }
+    .backgound-poster-movie::before {
+        width: 70%;
+        background: linear-gradient(to right, #18181b, rgba(0, 0, 0, 0) 60%);
+        box-shadow: 10px -20px 50px 50px #18181b inset;
+    }
+}
+
+.alert-message {
+    font-size: 12px;
+    color: #000;
+}
+
+.success {
+    border-top: 6px solid #86efac;
+    background-color: #dcfce7;
+}
+
+.error {
+    border-top: 4px solid #fca5a5;
+    background-color: #fee2e2;
 }

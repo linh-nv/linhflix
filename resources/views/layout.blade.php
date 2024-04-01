@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  @vite('resources/css/app.css')
+  {{-- @vite('resources/css/app.css') --}}
   <title>Linh phim</title>
   <meta name="description" content="Linh phim" />
   <meta property="og:title" content="Linh phim" />
   <meta property="og:description" content="Linh phim - Xem phim hay nhất, phim hay trung quốc, hàn quốc, việt nam, mỹ, hong kong , chiếu rạp" />
   <link rel="icon" href="{{asset('uploads/images/netflix-logo.png')}}" type="image/png">
-  {{-- <link rel="stylesheet" href="{{asset('css/style.css')}}"> --}}
-  {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
+  <link rel="stylesheet" href="{{asset('css/style.css')}}">
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
