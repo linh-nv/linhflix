@@ -70,4 +70,10 @@ class Kernel extends HttpKernel
         'check_request_valid' => \App\Http\Middleware\CheckRequestValid::class,
         'check_data_type' => \App\Http\Middleware\CheckDataType::class,
     ];
+
+    protected $routeMiddleware = [
+        // ...
+        'check.login' => \App\Http\Middleware\CheckLogin::class,
+    ];
+    
 }

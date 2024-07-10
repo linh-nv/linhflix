@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\GenreAPI;
 use App\Http\Controllers\Api\MovieAPI;
 use App\Http\Controllers\Api\UserAPI;
 use App\Http\Controllers\api\ViewAPI;
+use App\Http\Middleware\CheckLogin;
 use App\Models\Country;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -50,22 +51,20 @@ Route::group(['prefix' => 'view', 'middleware' => 'check_request_valid:Views'], 
 });
 
 // Movie
-Route::group(['prefix' => 'movie', 'middleware' => 'check_request_valid:Movies'], function () {
+Route::group(['prefix' => 'movie'], function () {
     Route::any('/',[MovieAPI::class, 'index'])->middleware('handle_method_requests:GET');
-    // tìm kiếm
     Route::post('/',[MovieAPI::class, 'store']);
 
     // tạo mới và kiểm tra có nhập thiếu trường nào không
     $rules = [
         'year' => 'integer',
         'category_id' => 'integer',
-        'genre_id' => 'integer',
         'country_id' => 'integer',
         'view' => 'integer',
     ];
     Route::any('/create', [MovieAPI::class, 'create'])
     ->middleware('handle_method_requests:POST')
-    ->middleware('check_required_fields:slug, title, name_eng, year, image, poster')
+    ->middleware('check_required_fields:slug, title, name_eng, year, poster')
     ->middleware('check_data_type:'. json_encode($rules));
 
     Route::any('/{id}',[MovieAPI::class, 'show']);
@@ -79,7 +78,6 @@ Route::group(['prefix' => 'movie', 'middleware' => 'check_request_valid:Movies']
 // Category
 Route::group(['prefix' => 'category', 'middleware' => 'check_request_valid:Categories'], function () {
     Route::any('/',[CategoryAPI::class, 'index'])->middleware('handle_method_requests:GET');
-    // tìm kiếm
     Route::post('/',[CategoryAPI::class, 'store']);
 
     // tạo mới và kiểm tra có nhập thiếu trường nào không
@@ -89,7 +87,7 @@ Route::group(['prefix' => 'category', 'middleware' => 'check_request_valid:Categ
     ];
     Route::any('/create', [CategoryAPI::class, 'create'])
     ->middleware('handle_method_requests:POST')
-    ->middleware('check_required_fields:slug, title, description, status, position')
+    ->middleware('check_required_fields:slug, title, description, status')
     ->middleware('check_data_type:'. json_encode($rules));
 
     Route::any('/{id}',[CategoryAPI::class, 'show']);
@@ -168,4 +166,5 @@ Route::group(['prefix' => 'episode', 'middleware' => 'check_request_valid:Episod
 
     Route::delete('/{id}', [EpisodeAPI::class, 'destroy']);
 });
-// Route::apiResource('user', UserAPI::class);
+Route::get('user', [UserAPI::class, 'index']);
+Route::post('user', [UserAPI::class, 'show']);

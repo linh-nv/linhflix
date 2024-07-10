@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class UserAPI extends Controller
 {
@@ -30,15 +31,15 @@ class UserAPI extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
-        $users = User::where('id', $id)->first();
+        $users = User::where('email', $request->email)->where('password', md5($request->password))->first();
         if(empty($users)){
             $data = [
                 'status: ' => 'false',
                 'message: ' => 'undefine'
             ];
-            return response()->json($data);
+            return response($data, Response::HTTP_NOT_FOUND);
         }else{
             return $users; 
         }

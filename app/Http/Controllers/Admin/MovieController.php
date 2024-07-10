@@ -89,12 +89,12 @@ class MovieController extends Controller
     }
 
     public function createFormAPI(){
-        $get_totalPage = Http::get("https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=1")->json();
+        $get_totalPage = Http::get("https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1")->json();
         
         $totalPages = $get_totalPage['pagination']['totalPages']; // Số lượng trang bạn muốn lấy dữ liệu
         
-        for ($page = 12; $page <= $totalPages; $page++) {
-            $data = Http::get("https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=$page")->json();
+        for ($page = 1; $page <= 10; $page++) {
+            $data = Http::get("https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=$page")->json();
             
             foreach ($data['items'] as $api) {
                 $movie = new Movie();

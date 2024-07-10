@@ -5,7 +5,7 @@
         <h1 class="h-text text-red-200">Đăng nhập</h1>
     </div>
     
-    <form id="page-form-login" action="{{route('login')}}" method="post" class="flex justify-center">
+    <form id="page-form-login" action="{{route('login_client')}}" method="post" class="flex justify-center">
       @csrf
       <div class="form-group mt-5 text-xl font-semibold xl:max-w-[400px] sm:max-w-[300px] w-full">
         @if(Session::has('login_false'))

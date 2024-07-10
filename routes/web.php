@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\EpisodeController;
@@ -23,6 +24,7 @@ use Laravel\Socialite\Facades\Socialite;
 Route::get('/test',function(){
     return view('test'); 
 });
+Auth::routes();
 // ---------------------------------Admin routes---------------------------------------
 Route::middleware(['check.login'])->group(function () {
     // Các route hoặc controller yêu cầu đăng nhập sẽ được đặt ở đây
@@ -62,7 +64,7 @@ Route::get('/them-phim',[IndexController::class, 'add_movie'])->name('add_movie'
 Route::get('/thong-tin-nguoi-dung',[UserController::class, 'user_info'])->name('user_info');
 Route::post('/cap-nhat-thong-tin',[UserController::class, 'update'])->name('update_info_user');
 Route::get('/dang-nhap',[UserController::class, 'login_page'])->name('login_page');
-Route::post('/login',[UserController::class, 'login'])->name('login');
+Route::post('/login_client',[UserController::class, 'login_client'])->name('login_client');
 Route::get('/dang-ky',[UserController::class, 'register'])->name('register');
 Route::get('/dang-xuat',[UserController::class, 'logout'])->name('logout');
 Route::post('/them-tai-khoan',[UserController::class, 'create_social_account'])->name('create_social_account');
@@ -93,5 +95,7 @@ Route::get('/auth/google', function () {
 });
 Route::get('auth/github/callback',[UserController::class, 'github_callback'])->name('github_callback');
 Route::get('auth/google/callback',[UserController::class, 'google_callback'])->name('google_callback');
+
+
 
 

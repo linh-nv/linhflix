@@ -114,7 +114,7 @@ class UserController extends Controller
         return view('pages.client.user.login', compact('category', 'genre', 'country'));
     }
     // post 
-    public function login(){
+    public function login_client(){
         if(isset($_POST)){
             $user = User::where('email', $_POST['account_login'])->where('password', md5($_POST['password_login']))->first();
             if(isset($user)){

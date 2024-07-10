@@ -12,10 +12,10 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
+    
     public function index()
     {
         $list = Category::orderBy('position','ASC')->get();
-        $movie = Movie::whereBetween('year',[1999,2001])->get();
         
         // cập nhật api vào flie
         // $api = [];

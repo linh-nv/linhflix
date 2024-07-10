@@ -244,9 +244,12 @@
                 </svg>            
             </span>
             <ul class="lg:overflow-y-hidden overflow-y-scroll rounded-xl lg:max-h-[100vh] max-h-[30vh] lg:absolute lg:grid lg:grid-cols-4 gap-4 w-[50vw] h-[60vh] hidden top-20 lg:p-16 p-4 lg:left-[-50%] left-0 lg:text-xl text-lg bg-black lg:opacity-0 opacity-100 lg:invisible lg:group-hover:opacity-100 lg:group-hover:visible transition-all duration-300 ease-in-out">
-              @foreach ($genre as $gen)
-                <li class="py-2 hover:text-white p-3"><a href="{{route('genre', $gen->slug)}}">{{$gen->title}}</a></li>  
-              @endforeach  
+
+                <li class="py-2 hover:text-white p-3"><a href="{{route('genre', '123')}}">Phim hay</a></li>  
+                <li class="py-2 hover:text-white p-3"><a href="{{route('genre', '123')}}">Phim hay</a></li>  
+                <li class="py-2 hover:text-white p-3"><a href="{{route('genre', '123')}}">Phim hay</a></li>  
+                <li class="py-2 hover:text-white p-3"><a href="{{route('genre', '123')}}">Phim hay</a></li>  
+
             </ul>
           </li>
           <li class="lg:px-8 w-[100%] whitespace-nowrap relative group" id="quocgia">
@@ -256,14 +259,17 @@
                   </svg>            
               </span>
               <ul class="lg:overflow-y-hidden overflow-y-scroll rounded-xl lg:max-h-[100vh] max-h-[30vh] lg:absolute lg:grid lg:grid-cols-4 gap-4 w-[50vw] h-[60vh] hidden top-20 lg:p-16 p-4 lg:left-[-50%] left-0 lg:text-xl text-lg bg-black lg:opacity-0 opacity-100 lg:invisible lg:group-hover:opacity-100 lg:group-hover:visible transition-all duration-300 ease-in-out">
-                @foreach ($country as $count)
-                  <li class="py-2 hover:text-white p-3"><a href="{{route('country', $count->slug)}}">{{$count->title}}</a></li>  
-                @endforeach
+
+                  <li class="py-2 hover:text-white p-3"><a href="{{route('country', '123')}}">Viet nam</a></li>  
+
               </ul>
           </li>   
-          @foreach ($category as $cate) 
-          <li class="py-5 lg:px-8 w-[100%] whitespace-nowrap"><a href="{{route('category', $cate->slug)}}" class="hover:text-white px-3">{{$cate->title}}</a></li>
-          @endforeach
+
+          <li class="py-5 lg:px-8 w-[100%] whitespace-nowrap"><a href="{{route('category', '123')}}" class="hover:text-white px-3">Phim chiếu rạp</a></li>
+          <li class="py-5 lg:px-8 w-[100%] whitespace-nowrap"><a href="{{route('category', '123')}}" class="hover:text-white px-3">Phim mới</a></li>
+          <li class="py-5 lg:px-8 w-[100%] whitespace-nowrap"><a href="{{route('category', '123')}}" class="hover:text-white px-3">Phim bộ</a></li>
+          <li class="py-5 lg:px-8 w-[100%] whitespace-nowrap"><a href="{{route('category', '123')}}" class="hover:text-white px-3">Phim lẻ</a></li>
+
           <li class="py-5 lg:px-8 w-[100%] whitespace-nowrap"><a href="{{route('new_movie')}}" class="text-blue-500 hover:text-blue-300 px-3">Thêm phim</a></li>
         </ul>
       </div>
