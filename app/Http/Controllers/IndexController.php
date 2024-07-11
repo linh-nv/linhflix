@@ -22,33 +22,33 @@ use Symfony\Component\DomCrawler\Crawler;
 class IndexController extends Controller
 {
     public function home(){
-        // $category = Category::orderBy('position','ASC')->get();
-        // $genre = Genre::orderBy('id','DESC')->get();
-        // $country = Country::orderBy('id','ASC')->get();
+        $category = Category::orderBy('position','ASC')->get();
+        $genre = Genre::orderBy('id','DESC')->get();
+        $country = Country::orderBy('id','ASC')->get();
 
-        // $movie = Movie::orderBy('view','DESC')->get();
-        // $new_movie = Movie::orderBy('year', 'DESC')->orderBy('view','DESC')->get();
-        // $serie_movie = Movie::where('category_id',6)->orderBy('year','DESC')->orderBy('view','DESC')->get();
-        // $singer_movie = Movie::where('category_id',7)->orderBy('year','DESC')->orderBy('view','DESC')->get();
+        $movie = Movie::orderBy('view','DESC')->get();
+        $new_movie = Movie::orderBy('year', 'DESC')->orderBy('view','DESC')->get();
+        $serie_movie = Movie::where('category_id',6)->orderBy('year','DESC')->orderBy('view','DESC')->get();
+        $singer_movie = Movie::where('category_id',7)->orderBy('year','DESC')->orderBy('view','DESC')->get();
 
-        // $view_day = View::with('movie')->whereDate('view_date', now()->toDateString())->orderBy('view_number', 'DESC')->get();
-        // $view_month_total = View::with('movie')->where('view_date', '>=', now()->startOfMonth()->toDateString())
-        // ->groupBy('movie_id') // Nhóm theo movie_id
-        // ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
-        // ->orderBy('total_views', 'DESC')
-        // ->get();
+        $view_day = View::with('movie')->whereDate('view_date', now()->toDateString())->orderBy('view_number', 'DESC')->get();
+        $view_month_total = View::with('movie')->where('view_date', '>=', now()->startOfMonth()->toDateString())
+        ->groupBy('movie_id') // Nhóm theo movie_id
+        ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
+        ->orderBy('total_views', 'DESC')
+        ->get();
 
-        // $view_year_total = View::with('movie')->where('view_date', '>=', now()->startOfYear())
-        // ->groupBy('movie_id') // Nhóm theo movie_id
-        // ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
-        // ->orderBy('total_views', 'DESC')
-        // ->get();
-        // $view_all_total = View::with('movie')->groupBy('movie_id') // Nhóm theo movie_id
-        // ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
-        // ->orderBy('total_views', 'DESC')
-        // ->get();
+        $view_year_total = View::with('movie')->where('view_date', '>=', now()->startOfYear())
+        ->groupBy('movie_id') // Nhóm theo movie_id
+        ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
+        ->orderBy('total_views', 'DESC')
+        ->get();
+        $view_all_total = View::with('movie')->groupBy('movie_id') // Nhóm theo movie_id
+        ->selectRaw('movie_id, SUM(view_number) as total_views') // Tính tổng view_number cho từng movie_id
+        ->orderBy('total_views', 'DESC')
+        ->get();
 
-        return view('pages.client.home'/*, compact('movie', 'new_movie', 'serie_movie', 'singer_movie', 'category', 'genre', 'country', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total')*/);
+        return view('pages.client.home', compact('movie', 'new_movie', 'serie_movie', 'singer_movie', 'category', 'genre', 'country', 'view_day', 'view_month_total', 'view_year_total', 'view_all_total'));
     }
     public function category($slug){
         $category = Category::orderBy('position','ASC')->get();
